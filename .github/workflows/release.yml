@@ -20,9 +20,10 @@ jobs:
     name: Build and publish release
     runs-on: ubuntu-latest
     steps:
+      # On a tag push this checks out the tag; on a manual run it checks out
+      # the branch it was dispatched from (the tag is then created by the
+      # release step below).
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - uses: actions/setup-java@v4
         with:
@@ -86,6 +87,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           name: Civics Prep ${{ steps.version.outputs.tag }}
           generate_release_notes: true
           fail_on_unmatched_files: true
@@ -106,9 +108,26 @@ jobs:
             - Browse by topic with search and tap-to-reveal answers
             - State-specific answers (bundled capitals + optional live Congress.gov refresh)
 
-            **Downloads**
-            - `civics-prep-*-universal.apk` — works on any Android device (largest)
-            - `civics-prep-*-arm64-v8a.apk` — most modern phones (smallest, recommended)
+            ## Install on your Android phone
+
+            1. Download **`civics-prep-${{ steps.version.outputs.number }}-universal.apk`**
+               below, straight from your phone's browser. (It works on every
+               device. If you want the smaller download and your phone is from
+               roughly 2017 or later, take the `arm64-v8a` one instead.)
+            2. Open the downloaded file. Android will ask permission to install
+               apps from this source — allow it for your browser, then tap
+               **Install**.
+            3. On first launch, open **Settings › My state info** and pick your
+               state so the state-specific questions can be graded.
+
+            The app needs microphone permission only when you tap the mic to
+            speak an answer, and it works fully offline.
+
+            **All downloads**
+            - `civics-prep-*-universal.apk` — any Android device (largest, easiest)
+            - `civics-prep-*-arm64-v8a.apk` — most modern phones (smaller)
+            - `civics-prep-*-armeabi-v7a.apk` — older 32-bit phones
+            - `civics-prep-*-x86_64.apk` — emulators / x86 devices
             - `civics-prep-*.aab` — App Bundle for Play Store upload
             - `SHA256SUMS.txt` — checksums for the files above
 
