@@ -35,8 +35,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Democracy',
-    prompt:
-        'The idea of self-government is in the first three words of the Constitution. What are these words?',
+    prompt: 'The idea of self-government is in the first three words of the Constitution. What are these words?',
     answers: ['We the People'],
   ),
   Question(
@@ -64,7 +63,13 @@ const List<Question> kQuestions2008 = [
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Democracy',
     prompt: 'What is one right or freedom from the First Amendment?',
-    answers: ['speech', 'religion', 'assembly', 'press', 'petition the government'],
+    answers: [
+      'speech',
+      'religion',
+      'assembly',
+      'press',
+      'petition the government',
+    ],
     senior: true,
   ),
   Question(
@@ -207,8 +212,7 @@ const List<Question> kQuestions2008 = [
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateSenator,
     senior: true,
-    note:
-        'District of Columbia residents and residents of U.S. territories have no U.S. Senators.',
+    note: 'District of Columbia residents and residents of U.S. territories have no U.S. Senators.',
   ),
   Question(
     id: 21,
@@ -234,8 +238,7 @@ const List<Question> kQuestions2008 = [
     prompt: 'Name your U.S. Representative.',
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateRepresentative,
-    note:
-        'Residents of territories with nonvoting Delegates or Resident Commissioners may name that Delegate or Commissioner.',
+    note: 'Residents of territories with nonvoting Delegates or Resident Commissioners may name that Delegate or Commissioner.',
   ),
   Question(
     id: 24,
@@ -250,8 +253,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'Why do some states have more Representatives than other states?',
+    prompt: 'Why do some states have more Representatives than other states?',
     answers: [
       "(because of) the state's population",
       '(because) they have more people',
@@ -292,8 +294,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'What is the name of the Vice President of the United States now?',
+    prompt: 'What is the name of the Vice President of the United States now?',
     answers: ['(current Vice President)'],
     kind: AnswerKind.vicePresident,
     note:
@@ -312,8 +313,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'If both the President and the Vice President can no longer serve, who becomes President?',
+    prompt: 'If both the President and the Vice President can no longer serve, who becomes President?',
     answers: ['the Speaker of the House'],
   ),
   Question(
@@ -419,8 +419,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'Under our Constitution, some powers belong to the federal government. What is one power of the federal government?',
+    prompt: 'Under our Constitution, some powers belong to the federal government. What is one power of the federal government?',
     answers: [
       'to print money',
       'to declare war',
@@ -433,8 +432,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'Under our Constitution, some powers belong to the states. What is one power of the states?',
+    prompt: 'Under our Constitution, some powers belong to the states. What is one power of the states?',
     answers: [
       'provide schooling and education',
       'provide protection (police)',
@@ -462,8 +460,7 @@ const List<Question> kQuestions2008 = [
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateCapital,
     senior: true,
-    note:
-        'D.C. is not a state and has no capital. Residents of U.S. territories should name the capital of the territory.',
+    note: 'D.C. is not a state and has no capital. Residents of U.S. territories should name the capital of the territory.',
   ),
   Question(
     id: 45,
@@ -483,8 +480,7 @@ const List<Question> kQuestions2008 = [
     prompt: 'What is the political party of the President now?',
     answers: ['(current party)'],
     kind: AnswerKind.presidentParty,
-    note:
-        'Verify the current answer at uscis.gov/citizenship/testupdates.',
+    note: 'Verify the current answer at uscis.gov/citizenship/testupdates.',
   ),
   Question(
     id: 47,
@@ -505,8 +501,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'There are four amendments to the Constitution about who can vote. Describe one of them.',
+    prompt: 'There are four amendments to the Constitution about who can vote. Describe one of them.',
     answers: [
       'Citizens eighteen (18) and older (can vote).',
       "You don't have to pay (a poll tax) to vote.",
@@ -553,8 +548,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'What do we show loyalty to when we say the Pledge of Allegiance?',
+    prompt: 'What do we show loyalty to when we say the Pledge of Allegiance?',
     answers: ['the United States', 'the flag'],
   ),
   Question(
@@ -608,8 +602,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'When is the last day you can send in federal income tax forms?',
+    prompt: 'When is the last day you can send in federal income tax forms?',
     answers: ['April 15'],
     senior: true,
   ),
@@ -654,8 +647,7 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
     section: 'Colonial Period and Independence',
-    prompt:
-        'What group of people was taken to America and sold as slaves?',
+    prompt: 'What group of people was taken to America and sold as slaves?',
     answers: ['Africans', 'people from Africa'],
   ),
   Question(
@@ -733,9 +725,13 @@ const List<Question> kQuestions2008 = [
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
     section: 'Colonial Period and Independence',
-    prompt:
-        'The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.',
-    answers: ['(James) Madison', '(Alexander) Hamilton', '(John) Jay', 'Publius'],
+    prompt: 'The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.',
+    answers: [
+      '(James) Madison',
+      '(Alexander) Hamilton',
+      '(John) Jay',
+      'Publius',
+    ],
   ),
   Question(
     id: 68,
@@ -847,7 +843,8 @@ const List<Question> kQuestions2008 = [
     id: 78,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Name one war fought by the United States in the 1900s.',
     answers: [
       'World War I',
@@ -862,7 +859,8 @@ const List<Question> kQuestions2008 = [
     id: 79,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Who was President during World War I?',
     answers: ['(Woodrow) Wilson'],
   ),
@@ -870,16 +868,17 @@ const List<Question> kQuestions2008 = [
     id: 80,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
-    prompt:
-        'Who was President during the Great Depression and World War II?',
+    section:
+        'Recent American History and Other Important Historical Information',
+    prompt: 'Who was President during the Great Depression and World War II?',
     answers: ['(Franklin) Roosevelt'],
   ),
   Question(
     id: 81,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Who did the United States fight in World War II?',
     answers: ['Japan, Germany, and Italy'],
   ),
@@ -887,16 +886,17 @@ const List<Question> kQuestions2008 = [
     id: 82,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
-    prompt:
-        'Before he was President, Eisenhower was a general. What war was he in?',
+    section:
+        'Recent American History and Other Important Historical Information',
+    prompt: 'Before he was President, Eisenhower was a general. What war was he in?',
     answers: ['World War II'],
   ),
   Question(
     id: 83,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt:
         'During the Cold War, what was the main concern of the United States?',
     answers: ['Communism'],
@@ -905,7 +905,8 @@ const List<Question> kQuestions2008 = [
     id: 84,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'What movement tried to end racial discrimination?',
     answers: ['civil rights (movement)'],
   ),
@@ -913,7 +914,8 @@ const List<Question> kQuestions2008 = [
     id: 85,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'What did Martin Luther King, Jr. do?',
     answers: [
       'fought for civil rights',
@@ -925,16 +927,17 @@ const List<Question> kQuestions2008 = [
     id: 86,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
-    prompt:
-        'What major event happened on September 11, 2001, in the United States?',
+    section:
+        'Recent American History and Other Important Historical Information',
+    prompt: 'What major event happened on September 11, 2001, in the United States?',
     answers: ['Terrorists attacked the United States.'],
   ),
   Question(
     id: 87,
     version: TestVersion.v2008,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Name one American Indian tribe in the United States.',
     answers: [
       'Cherokee',

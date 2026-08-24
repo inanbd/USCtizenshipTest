@@ -48,8 +48,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Government',
-    prompt:
-        'The U.S. Constitution starts with the words "We the People." What does "We the People" mean?',
+    prompt: 'The U.S. Constitution starts with the words "We the People." What does "We the People" mean?',
     answers: [
       'Self-government',
       'Popular sovereignty',
@@ -104,8 +103,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Government',
-    prompt:
-        'What founding document said the American colonies were free from Britain?',
+    prompt: 'What founding document said the American colonies were free from Britain?',
     answers: ['Declaration of Independence'],
   ),
   Question(
@@ -113,8 +111,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Government',
-    prompt:
-        'Name two important ideas from the Declaration of Independence and the U.S. Constitution.',
+    prompt: 'Name two important ideas from the Declaration of Independence and the U.S. Constitution.',
     answers: [
       'Equality',
       'Liberty',
@@ -130,8 +127,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Principles of American Government',
-    prompt:
-        'The words "Life, Liberty, and the pursuit of Happiness" are in what founding document?',
+    prompt: 'The words "Life, Liberty, and the pursuit of Happiness" are in what founding document?',
     answers: ['Declaration of Independence'],
   ),
   Question(
@@ -203,8 +199,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt:
-        'The President of the United States is in charge of which branch of government?',
+    prompt: 'The President of the United States is in charge of which branch of government?',
     answers: ['Executive branch'],
   ),
   Question(
@@ -261,8 +256,7 @@ const List<Question> kQuestions2020 = [
     prompt: "Who is one of your state's U.S. senators now?",
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateSenator,
-    note:
-        'District of Columbia residents and residents of U.S. territories have no U.S. senators.',
+    note: 'District of Columbia residents and residents of U.S. territories have no U.S. senators.',
   ),
   Question(
     id: 24,
@@ -316,15 +310,15 @@ const List<Question> kQuestions2020 = [
     prompt: 'Name your U.S. representative.',
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateRepresentative,
-    note:
-        'Residents of territories with nonvoting Delegates or Resident Commissioners may name that Delegate or Commissioner.',
+    note: 'Residents of territories with nonvoting Delegates or Resident Commissioners may name that Delegate or Commissioner.',
   ),
   Question(
     id: 30,
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'System of Government',
-    prompt: 'What is the name of the Speaker of the House of Representatives now?',
+    prompt:
+        'What is the name of the Speaker of the House of Representatives now?',
     answers: ['(current Speaker)'],
     kind: AnswerKind.speaker,
     senior: true,
@@ -669,8 +663,7 @@ const List<Question> kQuestions2020 = [
     prompt: 'What is the capital of your state?',
     answers: ['Answers will vary.'],
     kind: AnswerKind.stateCapital,
-    note:
-        'D.C. is not a state and has no capital. Residents of U.S. territories should name the capital of the territory.',
+    note: 'D.C. is not a state and has no capital. Residents of U.S. territories should name the capital of the territory.',
   ),
 
   // ---- American Government: Rights and Responsibilities ----
@@ -679,8 +672,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'There are four amendments to the U.S. Constitution about who can vote. Describe one of them.',
+    prompt: 'There are four amendments to the U.S. Constitution about who can vote. Describe one of them.',
     answers: [
       'Citizens eighteen (18) and older (can vote).',
       "You don't have to pay (a poll tax) to vote.",
@@ -693,8 +685,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'Who can vote in federal elections, run for federal office, and serve on a jury in the United States?',
+    prompt: 'Who can vote in federal elections, run for federal office, and serve on a jury in the United States?',
     answers: ['Citizens', 'Citizens of the United States', 'U.S. citizens'],
   ),
   Question(
@@ -718,8 +709,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'What do we show loyalty to when we say the Pledge of Allegiance?',
+    prompt: 'What do we show loyalty to when we say the Pledge of Allegiance?',
     answers: ['The United States', 'The flag'],
     senior: true,
   ),
@@ -806,8 +796,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanGovernment,
     section: 'Rights and Responsibilities',
-    prompt:
-        'It is important for all men age 18 through 25 to register for the Selective Service. Name one reason why.',
+    prompt: 'It is important for all men age 18 through 25 to register for the Selective Service. Name one reason why.',
     answers: [
       'Required by law',
       'Civic duty',
@@ -852,7 +841,8 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
     section: 'Colonial Period and Independence',
-    prompt: 'What war did the Americans fight to win independence from Britain?',
+    prompt:
+        'What war did the Americans fight to win independence from Britain?',
     answers: [
       'American Revolution',
       'The (American) Revolutionary War',
@@ -947,9 +937,13 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
     section: 'Colonial Period and Independence',
-    prompt:
-        'The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.',
-    answers: ['(James) Madison', '(Alexander) Hamilton', '(John) Jay', 'Publius'],
+    prompt: 'The Federalist Papers supported the passage of the U.S. Constitution. Name one of the writers.',
+    answers: [
+      '(James) Madison',
+      '(Alexander) Hamilton',
+      '(John) Jay',
+      'Publius',
+    ],
   ),
   Question(
     id: 84,
@@ -1121,8 +1115,7 @@ const List<Question> kQuestions2020 = [
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
     section: '1800s',
-    prompt:
-        'What amendment gives citizenship to all persons born in the United States?',
+    prompt: 'What amendment gives citizenship to all persons born in the United States?',
     answers: ['14th Amendment'],
   ),
   Question(
@@ -1159,7 +1152,8 @@ const List<Question> kQuestions2020 = [
     id: 100,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Name one war fought by the United States in the 1900s.',
     answers: [
       'World War I',
@@ -1173,7 +1167,8 @@ const List<Question> kQuestions2020 = [
     id: 101,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Why did the United States enter World War I?',
     answers: [
       'Because Germany attacked U.S. (civilian) ships',
@@ -1185,7 +1180,8 @@ const List<Question> kQuestions2020 = [
     id: 102,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'When did all women get the right to vote?',
     answers: ['1920', 'After World War I', '(With the) 19th Amendment'],
   ),
@@ -1193,7 +1189,8 @@ const List<Question> kQuestions2020 = [
     id: 103,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'What was the Great Depression?',
     answers: ['Longest economic recession in modern history'],
   ),
@@ -1201,7 +1198,8 @@ const List<Question> kQuestions2020 = [
     id: 104,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'When did the Great Depression start?',
     answers: ['The Great Crash (1929)', 'Stock market crash of 1929'],
   ),
@@ -1209,16 +1207,17 @@ const List<Question> kQuestions2020 = [
     id: 105,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
-    prompt:
-        'Who was president during the Great Depression and World War II?',
+    section:
+        'Recent American History and Other Important Historical Information',
+    prompt: 'Who was president during the Great Depression and World War II?',
     answers: ['(Franklin) Roosevelt'],
   ),
   Question(
     id: 106,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Why did the United States enter World War II?',
     answers: [
       '(Bombing of) Pearl Harbor',
@@ -1231,7 +1230,8 @@ const List<Question> kQuestions2020 = [
     id: 107,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Dwight Eisenhower is famous for many things. Name one.',
     answers: [
       'General during World War II',
@@ -1244,7 +1244,8 @@ const List<Question> kQuestions2020 = [
     id: 108,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: "Who was the United States' main rival during the Cold War?",
     answers: ['Soviet Union', 'USSR', 'Russia'],
   ),
@@ -1252,7 +1253,8 @@ const List<Question> kQuestions2020 = [
     id: 109,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt:
         'During the Cold War, what was one main concern of the United States?',
     answers: ['Communism', 'Nuclear war'],
@@ -1261,7 +1263,8 @@ const List<Question> kQuestions2020 = [
     id: 110,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Why did the United States enter the Korean War?',
     answers: ['To stop the spread of communism'],
   ),
@@ -1269,7 +1272,8 @@ const List<Question> kQuestions2020 = [
     id: 111,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Why did the United States enter the Vietnam War?',
     answers: ['To stop the spread of communism'],
   ),
@@ -1277,7 +1281,8 @@ const List<Question> kQuestions2020 = [
     id: 112,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'What did the civil rights movement do?',
     answers: ['Fought to end racial discrimination'],
   ),
@@ -1285,7 +1290,8 @@ const List<Question> kQuestions2020 = [
     id: 113,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Martin Luther King, Jr. is famous for many things. Name one.',
     answers: [
       'Fought for civil rights',
@@ -1298,7 +1304,8 @@ const List<Question> kQuestions2020 = [
     id: 114,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Why did the United States enter the Persian Gulf War?',
     answers: ['To force the Iraqi military from Kuwait'],
   ),
@@ -1306,7 +1313,8 @@ const List<Question> kQuestions2020 = [
     id: 115,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt:
         'What major event happened on September 11, 2001 in the United States?',
     answers: [
@@ -1321,7 +1329,8 @@ const List<Question> kQuestions2020 = [
     id: 116,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt:
         'Name one U.S. military conflict after the September 11, 2001 attacks.',
     answers: ['(Global) War on Terror', 'War in Afghanistan', 'War in Iraq'],
@@ -1330,7 +1339,8 @@ const List<Question> kQuestions2020 = [
     id: 117,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Name one American Indian tribe in the United States.',
     answers: [
       'Apache',
@@ -1365,7 +1375,8 @@ const List<Question> kQuestions2020 = [
     id: 118,
     version: TestVersion.v2020,
     category: QuestionCategory.americanHistory,
-    section: 'Recent American History and Other Important Historical Information',
+    section:
+        'Recent American History and Other Important Historical Information',
     prompt: 'Name one example of an American innovation.',
     answers: [
       'Light bulb',

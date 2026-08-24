@@ -36,11 +36,15 @@ class MockTestController extends ChangeNotifier {
 
   int get correctSoFar => _answers.where((a) => a.correct).length;
 
+  /// How many correct answers this session needs to pass (60%, scaled to the
+  /// number of questions actually asked).
+  int get passMark => version.passMarkFor(total);
+
   List<String> acceptedFor(Question q) => QuestionRepository.effectiveAnswers(
-        q,
-        state: state,
-        officials: officials,
-      );
+    q,
+    state: state,
+    officials: officials,
+  );
 
   int requiredCountFor(Question q) =>
       QuestionRepository.requiredCountFor(q, acceptedFor(q));
@@ -57,13 +61,15 @@ class MockTestController extends ChangeNotifier {
             accepted,
             requiredCount: requiredCountFor(q),
           );
-    _answers.add(AnsweredQuestion(
-      questionId: q.id,
-      prompt: q.prompt,
-      userAnswer: userAnswer.trim(),
-      acceptedAnswers: accepted.isEmpty ? q.answers : accepted,
-      correct: correct,
-    ));
+    _answers.add(
+      AnsweredQuestion(
+        questionId: q.id,
+        prompt: q.prompt,
+        userAnswer: userAnswer.trim(),
+        acceptedAnswers: accepted.isEmpty ? q.answers : accepted,
+        correct: correct,
+      ),
+    );
     notifyListeners();
     return correct;
   }
@@ -72,13 +78,15 @@ class MockTestController extends ChangeNotifier {
   void overrideLast({required bool correct}) {
     if (_answers.isEmpty) return;
     final last = _answers.removeLast();
-    _answers.add(AnsweredQuestion(
-      questionId: last.questionId,
-      prompt: last.prompt,
-      userAnswer: last.userAnswer,
-      acceptedAnswers: last.acceptedAnswers,
-      correct: correct,
-    ));
+    _answers.add(
+      AnsweredQuestion(
+        questionId: last.questionId,
+        prompt: last.prompt,
+        userAnswer: last.userAnswer,
+        acceptedAnswers: last.acceptedAnswers,
+        correct: correct,
+      ),
+    );
     notifyListeners();
   }
 
@@ -90,8 +98,8 @@ class MockTestController extends ChangeNotifier {
   }
 
   TestResult buildResult() => TestResult(
-        version: version,
-        takenAt: DateTime.now(),
-        answers: List.of(_answers),
-      );
+    version: version,
+    takenAt: DateTime.now(),
+    answers: List.of(_answers),
+  );
 }

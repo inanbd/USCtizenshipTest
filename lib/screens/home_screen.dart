@@ -30,9 +30,9 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings_rounded),
             tooltip: 'Settings',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
           ),
         ],
       ),
@@ -42,16 +42,15 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               'U.S. Citizenship Test',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(
               'Learn, drill, and take mock civics tests.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
             _VersionSelector(version: version),
@@ -60,10 +59,11 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             const _TodayPlanCard(),
             const SizedBox(height: 16),
-            Text('Practice',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    )),
+            Text(
+              'Practice',
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
             const SizedBox(height: 8),
             _FeatureTile(
               icon: Icons.quiz_rounded,
@@ -71,36 +71,36 @@ class HomeScreen extends StatelessWidget {
               subtitle:
                   'See & hear questions, write or speak your answers. ${version.askedCount} questions, pass with ${version.passCount}.',
               color: Theme.of(context).colorScheme.primary,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const MockTestSetupScreen(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const MockTestSetupScreen()),
+              ),
             ),
             _FeatureTile(
               icon: Icons.style_rounded,
               title: 'Flashcards',
               subtitle: 'Flip through all $total questions with audio.',
               color: Theme.of(context).colorScheme.secondary,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const FlashcardsScreen(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const FlashcardsScreen()),
+              ),
             ),
             _FeatureTile(
               icon: Icons.event_note_rounded,
               title: 'Study Plan',
               subtitle: 'Get a day-by-day plan based on your test date.',
               color: Theme.of(context).colorScheme.tertiary,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const StudyPlanScreen(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const StudyPlanScreen()),
+              ),
             ),
             _FeatureTile(
               icon: Icons.menu_book_rounded,
               title: 'Browse Questions',
               subtitle: 'All questions by topic, with answers and audio.',
               color: Theme.of(context).colorScheme.primary,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const BrowseScreen(),
-              )),
+              onTap: () => Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const BrowseScreen())),
             ),
           ],
         ),
@@ -163,14 +163,19 @@ class _ProgressCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('Your progress',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600)),
+                Text(
+                  'Your progress',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const Spacer(),
-                Text(version.shortLabel,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    )),
+                Text(
+                  version.shortLabel,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -183,8 +188,10 @@ class _ProgressCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text('$learned of $total marked known',
-                style: theme.textTheme.bodyMedium),
+            Text(
+              '$learned of $total marked known',
+              style: theme.textTheme.bodyMedium,
+            ),
             if (last != null) ...[
               const Divider(height: 24),
               Row(
@@ -229,15 +236,16 @@ class _TodayPlanCard extends StatelessWidget {
     return Card(
       color: theme.colorScheme.primaryContainer,
       child: InkWell(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => const StudyPlanScreen(),
-        )),
+        onTap: () => Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const StudyPlanScreen())),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(Icons.today_rounded,
-                  color: theme.colorScheme.onPrimaryContainer),
+              Icon(
+                Icons.today_rounded,
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -256,15 +264,18 @@ class _TodayPlanCard extends StatelessWidget {
                       '${(plan.progress * 100).round()}% complete · '
                       '${plan.days.length}-day plan',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer
-                            .withValues(alpha: 0.8),
+                        color: theme.colorScheme.onPrimaryContainer.withValues(
+                          alpha: 0.8,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded,
-                  color: theme.colorScheme.onPrimaryContainer),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
             ],
           ),
         ),
@@ -313,14 +324,19 @@ class _FeatureTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(subtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        )),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ),
               ),

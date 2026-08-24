@@ -87,8 +87,10 @@ class _CreatePlanViewState extends State<_CreatePlanView> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                Icon(Icons.event_available_rounded,
-                    color: theme.colorScheme.onTertiaryContainer),
+                Icon(
+                  Icons.event_available_rounded,
+                  color: theme.colorScheme.onTertiaryContainer,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -104,15 +106,20 @@ class _CreatePlanViewState extends State<_CreatePlanView> {
           ),
         ),
         const SizedBox(height: 20),
-        Text('Test date',
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600)),
+        Text(
+          'Test date',
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 8),
         Card(
           child: ListTile(
             leading: const Icon(Icons.calendar_month_rounded),
             title: Text(DateFormat.yMMMMEEEEd().format(_testDate)),
-            subtitle: Text(days <= 1 ? 'Cram mode (today)' : '$days days to study'),
+            subtitle: Text(
+              days <= 1 ? 'Cram mode (today)' : '$days days to study',
+            ),
             trailing: const Icon(Icons.edit_calendar_rounded),
             onTap: _pickDate,
           ),
@@ -121,7 +128,8 @@ class _CreatePlanViewState extends State<_CreatePlanView> {
         SwitchListTile(
           title: const Text('65/20 questions only'),
           subtitle: const Text(
-              'For applicants 65+ who have been residents 20+ years'),
+            'For applicants 65+ who have been residents 20+ years',
+          ),
           value: _seniorOnly,
           onChanged: (v) => setState(() => _seniorOnly = v),
         ),
@@ -129,10 +137,10 @@ class _CreatePlanViewState extends State<_CreatePlanView> {
         FilledButton.icon(
           onPressed: () {
             context.read<StudyPlanProvider>().createPlan(
-                  version: version,
-                  testDate: _testDate,
-                  seniorOnly: _seniorOnly,
-                );
+              version: version,
+              testDate: _testDate,
+              seniorOnly: _seniorOnly,
+            );
           },
           icon: const Icon(Icons.auto_awesome_rounded),
           label: const Text('Create study plan'),
@@ -175,14 +183,19 @@ class _PlanView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${plan.version.shortLabel} plan',
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(
+                      '${plan.version.shortLabel} plan',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const Spacer(),
-                    Text('Test: ${DateFormat.yMMMd().format(plan.testDate)}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        )),
+                    Text(
+                      'Test: ${DateFormat.yMMMd().format(plan.testDate)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -191,24 +204,26 @@ class _PlanView extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: plan.progress,
                     minHeight: 10,
-                    backgroundColor:
-                        theme.colorScheme.surfaceContainerHighest,
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                    '${plan.completedCount} of ${plan.totalDays} days complete',
-                    style: theme.textTheme.bodyMedium),
+                  '${plan.completedCount} of ${plan.totalDays} days complete',
+                  style: theme.textTheme.bodyMedium,
+                ),
               ],
             ),
           ),
         ),
         const SizedBox(height: 12),
-        ...plan.days.map((day) => _DayTile(
-              plan: plan,
-              day: day,
-              isToday: _dateOnly(day.date) == today,
-            )),
+        ...plan.days.map(
+          (day) => _DayTile(
+            plan: plan,
+            day: day,
+            isToday: _dateOnly(day.date) == today,
+          ),
+        ),
       ],
     );
   }
@@ -243,28 +258,33 @@ class _DayTile extends StatelessWidget {
         collapsedShape: const Border(),
         leading: Checkbox(
           value: done,
-          onChanged: (_) =>
-              context.read<StudyPlanProvider>().toggleDayComplete(day.dayNumber),
+          onChanged: (_) => context.read<StudyPlanProvider>().toggleDayComplete(
+            day.dayNumber,
+          ),
         ),
         title: Row(
           children: [
-            Text('Day ${day.dayNumber}',
-                style: theme.textTheme.titleSmall
-                    ?.copyWith(fontWeight: FontWeight.w700)),
+            Text(
+              'Day ${day.dayNumber}',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             if (isToday) ...[
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Text('TODAY',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    )),
+                child: Text(
+                  'TODAY',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ],
@@ -274,20 +294,26 @@ class _DayTile extends StatelessWidget {
           '${day.isReviewDay ? "Review ${questions.length} questions" : "${questions.length} new questions"}',
         ),
         children: questions
-            .map((q) => ListTile(
-                  dense: true,
-                  leading: CircleAvatar(
-                    radius: 14,
-                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                    child: Text('${q.id}',
-                        style: const TextStyle(fontSize: 11)),
-                  ),
-                  title: Text(q.prompt,
-                      maxLines: 2, overflow: TextOverflow.ellipsis),
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            .map(
+              (q) => ListTile(
+                dense: true,
+                leading: CircleAvatar(
+                  radius: 14,
+                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                  child: Text('${q.id}', style: const TextStyle(fontSize: 11)),
+                ),
+                title: Text(
+                  q.prompt,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
                     builder: (_) => QuestionDetailScreen(question: q),
-                  )),
-                ))
+                  ),
+                ),
+              ),
+            )
             .toList(),
       ),
     );

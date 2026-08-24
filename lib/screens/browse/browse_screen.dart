@@ -31,7 +31,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
     final filtered = all.where((q) {
       if (_search.isNotEmpty) {
         final s = _search.toLowerCase();
-        final inText = q.prompt.toLowerCase().contains(s) ||
+        final inText =
+            q.prompt.toLowerCase().contains(s) ||
             q.answers.any((a) => a.toLowerCase().contains(s)) ||
             q.id.toString() == s;
         if (!inText) return false;
@@ -81,25 +82,25 @@ class _BrowseScreenState extends State<BrowseScreen> {
             Expanded(
               child: filtered.isEmpty
                   ? Center(
-                      child: Text('No questions match.',
-                          style: Theme.of(context).textTheme.bodyLarge),
+                      child: Text(
+                        'No questions match.',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     )
                   : ListView(
                       padding: const EdgeInsets.fromLTRB(8, 8, 8, 24),
                       children: [
                         for (final entry in sections.entries) ...[
                           Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
                             child: Text(
                               entry.key,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
+                              style: Theme.of(context).textTheme.titleSmall
                                   ?.copyWith(
                                     fontWeight: FontWeight.w700,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                             ),
                           ),
@@ -147,10 +148,13 @@ class _QuestionTile extends StatelessWidget {
         foregroundColor: known ? scheme.onPrimary : scheme.onSurfaceVariant,
         child: known
             ? const Icon(Icons.check_rounded, size: 18)
-            : Text('${question.id}',
-                style: const TextStyle(fontSize: 13)),
+            : Text('${question.id}', style: const TextStyle(fontSize: 13)),
       ),
-      title: Text(question.prompt, maxLines: 2, overflow: TextOverflow.ellipsis),
+      title: Text(
+        question.prompt,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -158,15 +162,20 @@ class _QuestionTile extends StatelessWidget {
           if (question.senior)
             Padding(
               padding: const EdgeInsets.only(left: 4),
-              child: Icon(Icons.elderly_rounded,
-                  size: 16, color: scheme.tertiary),
+              child: Icon(
+                Icons.elderly_rounded,
+                size: 16,
+                color: scheme.tertiary,
+              ),
             ),
           const Icon(Icons.chevron_right_rounded),
         ],
       ),
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => QuestionDetailScreen(question: question),
-      )),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => QuestionDetailScreen(question: question),
+        ),
+      ),
     );
   }
 }

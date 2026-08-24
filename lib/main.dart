@@ -16,10 +16,5 @@ Future<void> main() async {
   final congress = CongressApiService();
   // Warm up TTS in the background; ignore failures on unsupported devices.
   unawaited(tts.init());
-  runApp(CivicsApp(
-    storage: storage,
-    tts: tts,
-    stt: stt,
-    congress: congress,
-  ));
+  runApp(CivicsApp(storage: storage, tts: tts, stt: stt, congress: congress));
 }

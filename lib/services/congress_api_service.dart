@@ -13,8 +13,7 @@ import 'package:http/http.dart' as http;
 /// user enters in Settings. When no key is set, the app relies on bundled +
 /// manually entered data instead.
 class CongressApiService {
-  CongressApiService({http.Client? client})
-      : _client = client ?? http.Client();
+  CongressApiService({http.Client? client}) : _client = client ?? http.Client();
 
   final http.Client _client;
   static const _base = 'https://api.congress.gov/v3';
@@ -103,7 +102,9 @@ class CongressMember {
     // The v3 API nests the current chamber under `terms.item`.
     String chamber = '';
     final terms = json['terms'];
-    if (terms is Map && terms['item'] is List && (terms['item'] as List).isNotEmpty) {
+    if (terms is Map &&
+        terms['item'] is List &&
+        (terms['item'] as List).isNotEmpty) {
       final last = (terms['item'] as List).last;
       if (last is Map && last['chamber'] != null) {
         chamber = last['chamber'].toString();

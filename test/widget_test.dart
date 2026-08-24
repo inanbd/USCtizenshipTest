@@ -11,12 +11,14 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     final storage = await StorageService.create();
 
-    await tester.pumpWidget(CivicsApp(
-      storage: storage,
-      tts: TtsService(),
-      stt: SttService(),
-      congress: CongressApiService(),
-    ));
+    await tester.pumpWidget(
+      CivicsApp(
+        storage: storage,
+        tts: TtsService(),
+        stt: SttService(),
+        congress: CongressApiService(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('U.S. Citizenship Test'), findsOneWidget);

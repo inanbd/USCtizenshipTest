@@ -57,11 +57,14 @@ class SttService {
     }
   }
 
+  /// Stops an in-progress recognition. Calling the plugin when we are not
+  /// listening schedules needless work, so this is a no-op in that case.
   Future<void> stop() async {
+    if (!listening.value) return;
+    listening.value = false;
     try {
       await _speech.stop();
     } catch (_) {}
-    listening.value = false;
   }
 
   void dispose() {

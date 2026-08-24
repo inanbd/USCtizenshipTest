@@ -31,8 +31,9 @@ class AnswerReveal extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 6),
             child: Text(
               'Give ${question.requiredCount} answers:',
-              style: theme.textTheme.labelLarge
-                  ?.copyWith(color: scheme.onSurfaceVariant),
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ),
         if (unresolved)
@@ -50,12 +51,13 @@ class AnswerReveal extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.check_circle_rounded,
-                      size: 18, color: scheme.primary),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(a, style: theme.textTheme.bodyLarge),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 18,
+                    color: scheme.primary,
                   ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(a, style: theme.textTheme.bodyLarge)),
                 ],
               ),
             ),
@@ -74,8 +76,7 @@ class AnswerReveal extends StatelessWidget {
             child: _InfoBanner(
               icon: Icons.update_rounded,
               color: scheme.tertiary,
-              text:
-                  'This answer changes over time. Update it in Settings › Current officials.',
+              text: 'This answer changes over time. Update it in Settings › Current officials.',
             ),
           ),
       ],
@@ -111,8 +112,9 @@ class _InfoBanner extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],

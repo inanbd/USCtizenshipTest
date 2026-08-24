@@ -53,15 +53,15 @@ class StateInfo {
   }
 
   Map<String, dynamic> toJson() => {
-        'code': code,
-        'name': name,
-        'capital': capital,
-        'governor': governor,
-        'senators': senators,
-        'representative': representative,
-        'updatedAt': updatedAt?.toIso8601String(),
-        'source': source.name,
-      };
+    'code': code,
+    'name': name,
+    'capital': capital,
+    'governor': governor,
+    'senators': senators,
+    'representative': representative,
+    'updatedAt': updatedAt?.toIso8601String(),
+    'source': source.name,
+  };
 
   factory StateInfo.fromJson(Map<String, dynamic> json) {
     return StateInfo(

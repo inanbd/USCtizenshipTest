@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/enums.dart';
 import '../../providers/mock_test_controller.dart';
 import '../../providers/progress_provider.dart';
 import '../../services/stt_service.dart';
@@ -38,17 +37,20 @@ class _MockTestScreenState extends State<MockTestScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              'Speech recognition unavailable. Check microphone permission.'),
+            'Speech recognition unavailable. Check microphone permission.',
+          ),
         ),
       );
       return;
     }
-    await stt.start(onResult: (text, isFinal) {
-      _answerCtrl.text = text;
-      _answerCtrl.selection = TextSelection.fromPosition(
-        TextPosition(offset: _answerCtrl.text.length),
-      );
-    });
+    await stt.start(
+      onResult: (text, isFinal) {
+        _answerCtrl.text = text;
+        _answerCtrl.selection = TextSelection.fromPosition(
+          TextPosition(offset: _answerCtrl.text.length),
+        );
+      },
+    );
   }
 
   void _submit(MockTestController controller) {
@@ -79,9 +81,9 @@ class _MockTestScreenState extends State<MockTestScreen> {
       await progress.setLearned(controller.version, a.questionId, true);
     }
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (_) => MockTestResultScreen(result: result),
-    ));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => MockTestResultScreen(result: result)),
+    );
   }
 
   @override
@@ -100,7 +102,9 @@ class _MockTestScreenState extends State<MockTestScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Question ${controller.index + 1} of ${controller.total}'),
+          title: Text(
+            'Question ${controller.index + 1} of ${controller.total}',
+          ),
           leading: IconButton(
             icon: const Icon(Icons.close_rounded),
             onPressed: _confirmQuit,
@@ -127,7 +131,7 @@ class _MockTestScreenState extends State<MockTestScreen> {
                         const SizedBox(width: 8),
                         _ScorePill(
                           label: 'Need',
-                          value: '${controller.version.passCount}',
+                          value: '${controller.passMark}',
                           color: theme.colorScheme.secondary,
                         ),
                       ],
@@ -140,11 +144,13 @@ class _MockTestScreenState extends State<MockTestScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Q${q.id}',
-                                style: theme.textTheme.labelLarge?.copyWith(
-                                  color: theme.colorScheme.onPrimaryContainer
-                                      .withValues(alpha: 0.7),
-                                )),
+                            Text(
+                              'Q${q.id}',
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: theme.colorScheme.onPrimaryContainer
+                                    .withValues(alpha: 0.7),
+                              ),
+                            ),
                             const SizedBox(height: 8),
                             Text(
                               q.prompt,
@@ -192,7 +198,9 @@ class _MockTestScreenState extends State<MockTestScreen> {
               valueListenable: stt.listening,
               builder: (context, listening, _) => IconButton(
                 onPressed: _toggleMic,
-                icon: Icon(listening ? Icons.stop_circle_rounded : Icons.mic_rounded),
+                icon: Icon(
+                  listening ? Icons.stop_circle_rounded : Icons.mic_rounded,
+                ),
                 color: listening
                     ? Theme.of(context).colorScheme.error
                     : Theme.of(context).colorScheme.primary,
@@ -214,8 +222,10 @@ class _MockTestScreenState extends State<MockTestScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
                       const SizedBox(width: 8),
-                      Text('Listening…',
-                          style: Theme.of(context).textTheme.bodySmall),
+                      Text(
+                        'Listening…',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ],
                   ),
                 )
@@ -227,9 +237,8 @@ class _MockTestScreenState extends State<MockTestScreen> {
             child: Text(
               'This answer depends on your state/current officials, so it will '
               'be self-graded.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
             ),
           ),
       ],
@@ -244,7 +253,9 @@ class _MockTestScreenState extends State<MockTestScreen> {
     final theme = Theme.of(context);
     final q = controller.current;
     final display = accepted.isEmpty ? q.answers : accepted;
-    final color = _lastCorrect ? theme.colorScheme.primary : theme.colorScheme.error;
+    final color = _lastCorrect
+        ? theme.colorScheme.primary
+        : theme.colorScheme.error;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -268,34 +279,45 @@ class _MockTestScreenState extends State<MockTestScreen> {
                 ungradable
                     ? 'Self-graded'
                     : (_lastCorrect ? 'Correct!' : 'Not quite'),
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(color: color, fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        Text('Accepted answer${display.length > 1 ? "s" : ""}:',
-            style: theme.textTheme.labelLarge),
+        Text(
+          'Accepted answer${display.length > 1 ? "s" : ""}:',
+          style: theme.textTheme.labelLarge,
+        ),
         const SizedBox(height: 6),
-        ...display.map((a) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.check_rounded,
-                      size: 18, color: theme.colorScheme.primary),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(a)),
-                ],
-              ),
-            )),
+        ...display.map(
+          (a) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.check_rounded,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Text(a)),
+              ],
+            ),
+          ),
+        ),
         if (q.note != null) ...[
           const SizedBox(height: 8),
-          Text(q.note!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              )),
+          Text(
+            q.note!,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
         const SizedBox(height: 16),
         Row(
@@ -338,9 +360,11 @@ class _MockTestScreenState extends State<MockTestScreen> {
                   )
                 : FilledButton.icon(
                     onPressed: () => _next(controller),
-                    icon: Icon(controller.isFinished
-                        ? Icons.flag_rounded
-                        : Icons.arrow_forward_rounded),
+                    icon: Icon(
+                      controller.isFinished
+                          ? Icons.flag_rounded
+                          : Icons.arrow_forward_rounded,
+                    ),
                     label: Text(controller.isFinished ? 'See results' : 'Next'),
                   ),
           ),
@@ -394,15 +418,17 @@ class _ScorePill extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text('$value ',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  )),
-          Text(label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  )),
+          Text(
+            '$value ',
+            style: Theme.of(context).textTheme.titleMedium
+                ?.copyWith(color: color, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );

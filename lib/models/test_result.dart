@@ -17,12 +17,12 @@ class AnsweredQuestion {
   final bool correct;
 
   Map<String, dynamic> toJson() => {
-        'questionId': questionId,
-        'prompt': prompt,
-        'userAnswer': userAnswer,
-        'acceptedAnswers': acceptedAnswers,
-        'correct': correct,
-      };
+    'questionId': questionId,
+    'prompt': prompt,
+    'userAnswer': userAnswer,
+    'acceptedAnswers': acceptedAnswers,
+    'correct': correct,
+  };
 
   factory AnsweredQuestion.fromJson(Map<String, dynamic> json) =>
       AnsweredQuestion(
@@ -50,25 +50,25 @@ class TestResult {
   int get total => answers.length;
   int get correctCount => answers.where((a) => a.correct).length;
 
-  /// The real interview stops early once you pass or can no longer pass, but
-  /// for study we grade against the version's passing threshold.
-  bool get passed => correctCount >= version.passCount;
+  /// How many correct answers this session needed to pass.
+  int get passMark => version.passMarkFor(total);
+
+  /// Graded at the official 60%, scaled to however many questions were asked.
+  bool get passed => total > 0 && correctCount >= passMark;
 
   double get score => total == 0 ? 0 : correctCount / total;
 
   Map<String, dynamic> toJson() => {
-        'version': version.storageKey,
-        'takenAt': takenAt.toIso8601String(),
-        'answers': answers.map((a) => a.toJson()).toList(),
-      };
+    'version': version.storageKey,
+    'takenAt': takenAt.toIso8601String(),
+    'answers': answers.map((a) => a.toJson()).toList(),
+  };
 
   factory TestResult.fromJson(Map<String, dynamic> json) => TestResult(
-        version: json['version'] == 'v2020'
-            ? TestVersion.v2020
-            : TestVersion.v2008,
-        takenAt: DateTime.parse(json['takenAt'] as String),
-        answers: (json['answers'] as List)
-            .map((a) => AnsweredQuestion.fromJson(a as Map<String, dynamic>))
-            .toList(),
-      );
+    version: json['version'] == 'v2020' ? TestVersion.v2020 : TestVersion.v2008,
+    takenAt: DateTime.parse(json['takenAt'] as String),
+    answers: (json['answers'] as List)
+        .map((a) => AnsweredQuestion.fromJson(a as Map<String, dynamic>))
+        .toList(),
+  );
 }

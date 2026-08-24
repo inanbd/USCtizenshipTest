@@ -32,9 +32,13 @@ class SettingsScreen extends StatelessWidget {
               child: SegmentedButton<TestVersion>(
                 segments: const [
                   ButtonSegment(
-                      value: TestVersion.v2008, label: Text('2008 · 100Q')),
+                    value: TestVersion.v2008,
+                    label: Text('2008 · 100Q'),
+                  ),
                   ButtonSegment(
-                      value: TestVersion.v2020, label: Text('2020 · 128Q')),
+                    value: TestVersion.v2020,
+                    label: Text('2020 · 128Q'),
+                  ),
                 ],
                 selected: {settings.testVersion},
                 onSelectionChanged: (s) =>
@@ -54,7 +58,9 @@ class SettingsScreen extends StatelessWidget {
               child: const Column(
                 children: [
                   RadioListTile(
-                      value: ThemeMode.system, title: Text('Match system')),
+                    value: ThemeMode.system,
+                    title: Text('Match system'),
+                  ),
                   RadioListTile(value: ThemeMode.light, title: Text('Light')),
                   RadioListTile(value: ThemeMode.dark, title: Text('Dark')),
                 ],
@@ -79,9 +85,9 @@ class SettingsScreen extends StatelessWidget {
               trailing: IconButton(
                 icon: const Icon(Icons.play_circle_outline_rounded),
                 tooltip: 'Preview',
-                onPressed: () => context
-                    .read<TtsService>()
-                    .speak('What is the supreme law of the land?'),
+                onPressed: () => context.read<TtsService>().speak(
+                  'What is the supreme law of the land?',
+                ),
               ),
             ),
 
@@ -89,31 +95,31 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.location_on_outlined),
               title: const Text('My state info'),
-              subtitle: Text(settings.stateInfo == null
-                  ? 'Not set — needed for state-specific questions'
-                  : '${settings.stateInfo!.name} · capital ${settings.stateInfo!.capital}'),
+              subtitle: Text(
+                settings.stateInfo == null
+                    ? 'Not set — needed for state-specific questions'
+                    : '${settings.stateInfo!.name} · capital ${settings.stateInfo!.capital}',
+              ),
               trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const StateInfoScreen(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const StateInfoScreen()),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.account_balance_rounded),
               title: const Text('Current officials'),
-              subtitle: Text(
-                  'President: ${settings.officials.president}'),
+              subtitle: Text('President: ${settings.officials.president}'),
               trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const OfficialsScreen(),
-              )),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const OfficialsScreen()),
+              ),
             ),
 
             _header(context, 'Progress'),
             ListTile(
               leading: const Icon(Icons.restart_alt_rounded),
               title: const Text('Reset "known" marks'),
-              subtitle:
-                  Text('For the ${settings.testVersion.shortLabel} set'),
+              subtitle: Text('For the ${settings.testVersion.shortLabel} set'),
               onTap: () => _confirmReset(context, settings.testVersion),
             ),
             ListTile(
@@ -150,16 +156,16 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _header(BuildContext context, String text) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 6),
-        child: Text(
-          text.toUpperCase(),
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.6,
-              ),
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(16, 20, 16, 6),
+    child: Text(
+      text.toUpperCase(),
+      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+        color: Theme.of(context).colorScheme.primary,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.6,
+      ),
+    ),
+  );
 
   Future<void> _confirmReset(BuildContext context, TestVersion version) async {
     final ok = await showDialog<bool>(
@@ -167,7 +173,8 @@ class SettingsScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Reset progress?'),
         content: Text(
-            'This clears your "known" marks for the ${version.shortLabel} set.'),
+          'This clears your "known" marks for the ${version.shortLabel} set.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),

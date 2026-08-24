@@ -1,5 +1,8 @@
 # Civics Prep — U.S. Citizenship Test study app
 
+[![CI](https://github.com/inanbd/USCtizenshipTest/actions/workflows/ci.yml/badge.svg)](https://github.com/inanbd/USCtizenshipTest/actions/workflows/ci.yml)
+[![Release](https://github.com/inanbd/USCtizenshipTest/actions/workflows/release.yml/badge.svg)](https://github.com/inanbd/USCtizenshipTest/actions/workflows/release.yml)
+
 A Flutter app to learn and practice the USCIS civics (naturalization) test. It
 bundles **both** official question sets, runs mock tests where you can **see and
 hear** each question and **type or speak** your answer, generates a **study
@@ -46,7 +49,9 @@ Requires the [Flutter SDK](https://docs.flutter.dev/get-started/install)
 ```bash
 flutter pub get
 flutter run                 # run on a connected device/emulator
-flutter test                # run the unit/widget tests
+flutter test                # run the full test suite
+flutter analyze             # static analysis
+dart format .               # canonical formatting (CI enforces this)
 flutter build apk --release # build a release APK
 ```
 
@@ -77,8 +82,52 @@ lib/
   screens/       home, mock_test/, flashcards/, study_plan/, browse/, settings/
   widgets/       SpeakerButton, AnswerReveal
   theme/         app theme
-test/            answer matcher, study plan, dataset integrity, widget smoke test
+test/
+  data/          dataset integrity (both official sets) + dynamic answer resolution
+  models/        JSON round-trips for everything persisted to disk
+  services/      answer matcher, study plan generator, Congress.gov client
+  providers/     settings/progress/study-plan persistence, mock-test controller
+  screens/       end-to-end widget tests for every feature
+  helpers/       plugin channel mocks (TTS/STT) and test fixtures
 ```
+
+## Testing
+
+216 tests cover the app end to end:
+
+```bash
+flutter test
+```
+
+- **Dataset integrity** pins both official sets to the USCIS structure — 100/128
+  questions, the exact 20 asterisked 65/20 questions in each, which questions are
+  state-dependent vs. time-sensitive, and the required answer counts.
+- **Answer matching** covers lenient grading (case, punctuation, parentheticals,
+  typos, spoken slips) *and* the cases that must stay strict: "Vice President" is
+  never accepted for "the President", negated answers are rejected, and one vague
+  word cannot satisfy a "name two" question.
+- **Widget tests** drive real user flows, including hearing a question and
+  speaking an answer — the native TTS and speech-to-text channels are mocked in
+  `test/helpers/test_harness.dart`, so a simulated recognition result flows into
+  the answer field and gets graded just as it would on a device.
+
+## Continuous integration and releases
+
+- **`.github/workflows/ci.yml`** — on every push and pull request: format check,
+  `flutter analyze`, the full test suite, then a release APK build.
+- **`.github/workflows/release.yml`** — on a `v*` tag: re-runs all checks, builds
+  the universal APK, per-ABI APKs and an App Bundle, and publishes them to a
+  GitHub Release with checksums.
+
+To cut a release:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+> Released APKs are signed with Flutter's **debug** key so they install directly
+> for testing. Add your own keystore before publishing to the Play Store.
 
 ## Data sources & accuracy
 

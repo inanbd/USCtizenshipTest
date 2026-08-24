@@ -68,8 +68,10 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Row(
                 children: [
-                  Text('${_current + 1} / ${_cards.length}',
-                      style: theme.textTheme.labelLarge),
+                  Text(
+                    '${_current + 1} / ${_cards.length}',
+                    style: theme.textTheme.labelLarge,
+                  ),
                   const Spacer(),
                   FilterChip(
                     label: const Text('65/20 only'),
@@ -93,15 +95,15 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             _NavBar(
               onPrev: _current > 0
                   ? () => _controller.previousPage(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeOut,
-                      )
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                    )
                   : null,
               onNext: _current < _cards.length - 1
                   ? () => _controller.nextPage(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeOut,
-                      )
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                    )
                   : null,
             ),
           ],
@@ -167,39 +169,46 @@ class _FlashcardState extends State<_Flashcard> {
                         child: _flipped
                             ? AnswerReveal(
                                 question: q,
-                                acceptedAnswers:
-                                    accepted.isEmpty ? q.answers : accepted,
+                                acceptedAnswers: accepted.isEmpty
+                                    ? q.answers
+                                    : accepted,
                                 unresolved: unresolved,
                               )
                             : Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('Q${q.id}',
-                                      style: theme.textTheme.labelLarge
-                                          ?.copyWith(
-                                        color: theme
-                                            .colorScheme.onPrimaryContainer
-                                            .withValues(alpha: 0.7),
-                                      )),
+                                  Text(
+                                    'Q${q.id}',
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      color: theme
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                          .withValues(alpha: 0.7),
+                                    ),
+                                  ),
                                   const SizedBox(height: 12),
                                   Text(
                                     q.prompt,
                                     textAlign: TextAlign.center,
                                     style: theme.textTheme.headlineSmall
                                         ?.copyWith(
-                                      color: theme
-                                          .colorScheme.onPrimaryContainer,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                          color: theme
+                                              .colorScheme
+                                              .onPrimaryContainer,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                   ),
                                   const SizedBox(height: 16),
-                                  Text('Tap to flip',
-                                      style: theme.textTheme.labelMedium
-                                          ?.copyWith(
-                                        color: theme
-                                            .colorScheme.onPrimaryContainer
-                                            .withValues(alpha: 0.6),
-                                      )),
+                                  Text(
+                                    'Tap to flip',
+                                    style: theme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          color: theme
+                                              .colorScheme
+                                              .onPrimaryContainer
+                                              .withValues(alpha: 0.6),
+                                        ),
+                                  ),
                                 ],
                               ),
                       ),
@@ -212,22 +221,26 @@ class _FlashcardState extends State<_Flashcard> {
           const SizedBox(height: 12),
           Row(
             children: [
-              SpeakerButton(text: _flipped
-                  ? (accepted.isEmpty ? q.answers.first : accepted.first)
-                  : q.prompt),
+              SpeakerButton(
+                text: _flipped
+                    ? (accepted.isEmpty ? q.answers.first : accepted.first)
+                    : q.prompt,
+              ),
               const Spacer(),
               IconButton.filledTonal(
                 onPressed: () => progress.toggleFavorite(q.version, q.id),
-                icon: Icon(progress.isFavorite(q.version, q.id)
-                    ? Icons.star_rounded
-                    : Icons.star_border_rounded),
+                icon: Icon(
+                  progress.isFavorite(q.version, q.id)
+                      ? Icons.star_rounded
+                      : Icons.star_border_rounded,
+                ),
               ),
               const SizedBox(width: 8),
               FilledButton.icon(
                 onPressed: () => progress.toggleLearned(q.version, q.id),
-                icon: Icon(known
-                    ? Icons.check_circle_rounded
-                    : Icons.circle_outlined),
+                icon: Icon(
+                  known ? Icons.check_circle_rounded : Icons.circle_outlined,
+                ),
                 label: Text(known ? 'Known' : 'Learn'),
               ),
             ],

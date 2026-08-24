@@ -71,8 +71,9 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
             const SizedBox(height: 16),
             Text(
               q.prompt,
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
@@ -116,7 +117,8 @@ class _QuestionDetailScreenState extends State<QuestionDetailScreen> {
               ),
               onPressed: () => progress.toggleLearned(q.version, q.id),
               icon: Icon(
-                  isKnown ? Icons.check_circle_rounded : Icons.circle_outlined),
+                isKnown ? Icons.check_circle_rounded : Icons.circle_outlined,
+              ),
               label: Text(isKnown ? 'Marked as known' : 'Mark as known'),
             ),
           ],
@@ -143,9 +145,7 @@ class _Tag extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
+        style: Theme.of(context).textTheme.labelSmall
             ?.copyWith(color: c, fontWeight: FontWeight.w600),
       ),
     );

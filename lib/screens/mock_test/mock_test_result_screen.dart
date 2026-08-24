@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../models/enums.dart';
 import '../../models/test_result.dart';
 
 class MockTestResultScreen extends StatelessWidget {
@@ -12,7 +11,9 @@ class MockTestResultScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final passed = result.passed;
-    final color = passed ? theme.colorScheme.primary : theme.colorScheme.secondary;
+    final color = passed
+        ? theme.colorScheme.primary
+        : theme.colorScheme.secondary;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,8 +56,8 @@ class MockTestResultScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Passing score: ${result.version.passCount}/'
-                            '${result.version.askedCount}',
+                            'Passing score: ${result.passMark}/${result.total}'
+                            ' (60%)',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
@@ -66,9 +67,12 @@ class MockTestResultScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Text('Review',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600)),
+                  Text(
+                    'Review',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   ...result.answers.map((a) => _AnswerReviewTile(answer: a)),
                 ],
@@ -80,9 +84,8 @@ class MockTestResultScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: FilledButton.icon(
-                      onPressed: () => Navigator.of(context).popUntil(
-                        (r) => r.isFirst,
-                      ),
+                      onPressed: () =>
+                          Navigator.of(context).popUntil((r) => r.isFirst),
                       icon: const Icon(Icons.home_rounded),
                       label: const Text('Done'),
                     ),
@@ -104,8 +107,9 @@ class _AnswerReviewTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color =
-        answer.correct ? theme.colorScheme.primary : theme.colorScheme.error;
+    final color = answer.correct
+        ? theme.colorScheme.primary
+        : theme.colorScheme.error;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -124,18 +128,29 @@ class _AnswerReviewTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(answer.prompt,
-                      style: theme.textTheme.titleSmall
-                          ?.copyWith(fontWeight: FontWeight.w600)),
+                  child: Text(
+                    answer.prompt,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             if (answer.userAnswer.isNotEmpty)
-              _line(context, 'You', answer.userAnswer,
-                  theme.colorScheme.onSurfaceVariant),
-            _line(context, 'Answer', answer.acceptedAnswers.join(', '),
-                theme.colorScheme.primary),
+              _line(
+                context,
+                'You',
+                answer.userAnswer,
+                theme.colorScheme.onSurfaceVariant,
+              ),
+            _line(
+              context,
+              'Answer',
+              answer.acceptedAnswers.join(', '),
+              theme.colorScheme.primary,
+            ),
           ],
         ),
       ),
@@ -150,11 +165,11 @@ class _AnswerReviewTile extends StatelessWidget {
         children: [
           SizedBox(
             width: 58,
-            child: Text(label,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w600,
-                    )),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.labelMedium
+                  ?.copyWith(color: color, fontWeight: FontWeight.w600),
+            ),
           ),
           Expanded(child: Text(value)),
         ],

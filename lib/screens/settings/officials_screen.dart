@@ -31,8 +31,9 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
     _speaker = TextEditingController(text: o.speaker);
     _chief = TextEditingController(text: o.chiefJustice);
     _party = TextEditingController(text: o.presidentParty);
-    _apiKey =
-        TextEditingController(text: context.read<SettingsProvider>().congressApiKey);
+    _apiKey = TextEditingController(
+      text: context.read<SettingsProvider>().congressApiKey,
+    );
   }
 
   @override
@@ -48,19 +49,20 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
 
   Future<void> _save() async {
     final settings = context.read<SettingsProvider>();
-    await settings.setOfficials(Officials(
-      president: _president.text.trim(),
-      vicePresident: _vp.text.trim(),
-      speaker: _speaker.text.trim(),
-      chiefJustice: _chief.text.trim(),
-      presidentParty: _party.text.trim(),
-      asOf: DateTime.now(),
-    ));
+    await settings.setOfficials(
+      Officials(
+        president: _president.text.trim(),
+        vicePresident: _vp.text.trim(),
+        speaker: _speaker.text.trim(),
+        chiefJustice: _chief.text.trim(),
+        presidentParty: _party.text.trim(),
+        asOf: DateTime.now(),
+      ),
+    );
     await settings.setCongressApiKey(_apiKey.text.trim());
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Saved.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Saved.')));
       Navigator.of(context).pop();
     }
   }
@@ -85,10 +87,7 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
       appBar: AppBar(
         title: const Text('Current officials'),
         actions: [
-          TextButton(
-            onPressed: _resetDefaults,
-            child: const Text('Defaults'),
-          ),
+          TextButton(onPressed: _resetDefaults, child: const Text('Defaults')),
         ],
       ),
       body: SafeArea(
@@ -101,8 +100,10 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(Icons.update_rounded,
-                        color: theme.colorScheme.onTertiaryContainer),
+                    Icon(
+                      Icons.update_rounded,
+                      color: theme.colorScheme.onTertiaryContainer,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -121,10 +122,12 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
             if (asOf != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8, left: 4),
-                child: Text('Last set ${DateFormat.yMMMd().format(asOf)}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    )),
+                child: Text(
+                  'Last set ${DateFormat.yMMMd().format(asOf)}',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ),
             const SizedBox(height: 16),
             _field('President', _president, Icons.person_rounded),
@@ -133,9 +136,12 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
             _field('Chief Justice', _chief, Icons.balance_rounded),
             _field("President's political party", _party, Icons.flag_rounded),
             const SizedBox(height: 24),
-            Text('Congress.gov API key (optional)',
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              'Congress.gov API key (optional)',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 8),
             Text(
               'Used to refresh your state\'s senators and representatives. '
@@ -164,14 +170,12 @@ class _OfficialsScreenState extends State<OfficialsScreen> {
     );
   }
 
-  Widget _field(String label, TextEditingController c, IconData icon) => Padding(
+  Widget _field(String label, TextEditingController c, IconData icon) =>
+      Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: TextField(
           controller: c,
-          decoration: InputDecoration(
-            labelText: label,
-            prefixIcon: Icon(icon),
-          ),
+          decoration: InputDecoration(labelText: label, prefixIcon: Icon(icon)),
         ),
       );
 }

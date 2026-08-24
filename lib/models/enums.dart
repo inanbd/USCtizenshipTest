@@ -9,46 +9,55 @@ enum TestVersion {
 
 extension TestVersionX on TestVersion {
   String get label => switch (this) {
-        TestVersion.v2008 => '2008 test (100 questions)',
-        TestVersion.v2020 => '2020 test (128 questions)',
-      };
+    TestVersion.v2008 => '2008 test (100 questions)',
+    TestVersion.v2020 => '2020 test (128 questions)',
+  };
 
   String get shortLabel => switch (this) {
-        TestVersion.v2008 => '2008 · 100Q',
-        TestVersion.v2020 => '2020 · 128Q',
-      };
+    TestVersion.v2008 => '2008 · 100Q',
+    TestVersion.v2020 => '2020 · 128Q',
+  };
 
   /// Number of questions asked in the real interview.
   int get askedCount => switch (this) {
-        TestVersion.v2008 => 10,
-        TestVersion.v2020 => 20,
-      };
+    TestVersion.v2008 => 10,
+    TestVersion.v2020 => 20,
+  };
 
-  /// Number of correct answers needed to pass.
+  /// Number of correct answers needed to pass the real interview.
   int get passCount => switch (this) {
-        TestVersion.v2008 => 6,
-        TestVersion.v2020 => 12,
-      };
+    TestVersion.v2008 => 6,
+    TestVersion.v2020 => 12,
+  };
+
+  /// USCIS passes both versions at 60% (6 of 10, 12 of 20).
+  double get passRatio => 0.6;
+
+  /// How many correct answers a practice test of [total] questions needs.
+  ///
+  /// Mock tests can be shortened, so the official [passCount] only applies at
+  /// the full [askedCount]; shorter sessions are held to the same 60%.
+  int passMarkFor(int total) {
+    if (total <= 0) return 0;
+    if (total == askedCount) return passCount;
+    return (total * passRatio).ceil();
+  }
 
   String get storageKey => switch (this) {
-        TestVersion.v2008 => 'v2008',
-        TestVersion.v2020 => 'v2020',
-      };
+    TestVersion.v2008 => 'v2008',
+    TestVersion.v2020 => 'v2020',
+  };
 }
 
 /// Top-level USCIS grouping for a question.
-enum QuestionCategory {
-  americanGovernment,
-  americanHistory,
-  integratedCivics,
-}
+enum QuestionCategory { americanGovernment, americanHistory, integratedCivics }
 
 extension QuestionCategoryX on QuestionCategory {
   String get label => switch (this) {
-        QuestionCategory.americanGovernment => 'American Government',
-        QuestionCategory.americanHistory => 'American History',
-        QuestionCategory.integratedCivics => 'Integrated Civics',
-      };
+    QuestionCategory.americanGovernment => 'American Government',
+    QuestionCategory.americanHistory => 'American History',
+    QuestionCategory.integratedCivics => 'Integrated Civics',
+  };
 }
 
 /// How the accepted answer for a question is produced.
@@ -78,23 +87,21 @@ extension AnswerKindX on AnswerKind {
   bool get isFixed => this == AnswerKind.fixed;
 
   bool get isStateDependent => switch (this) {
-        AnswerKind.stateCapital ||
-        AnswerKind.governor ||
-        AnswerKind.stateSenator ||
-        AnswerKind.stateRepresentative =>
-          true,
-        _ => false,
-      };
+    AnswerKind.stateCapital ||
+    AnswerKind.governor ||
+    AnswerKind.stateSenator ||
+    AnswerKind.stateRepresentative => true,
+    _ => false,
+  };
 
   bool get isTimeSensitive => switch (this) {
-        AnswerKind.president ||
-        AnswerKind.vicePresident ||
-        AnswerKind.speaker ||
-        AnswerKind.chiefJustice ||
-        AnswerKind.presidentParty =>
-          true,
-        _ => false,
-      };
+    AnswerKind.president ||
+    AnswerKind.vicePresident ||
+    AnswerKind.speaker ||
+    AnswerKind.chiefJustice ||
+    AnswerKind.presidentParty => true,
+    _ => false,
+  };
 
   bool get isDynamic => !isFixed;
 }

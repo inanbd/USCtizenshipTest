@@ -29,12 +29,14 @@ class StudyPlanGenerator {
     final days = <StudyDay>[];
 
     if (totalDays == 1) {
-      days.add(StudyDay(
-        dayNumber: 1,
-        date: today,
-        questionIds: ids,
-        isReviewDay: true,
-      ));
+      days.add(
+        StudyDay(
+          dayNumber: 1,
+          date: today,
+          questionIds: ids,
+          isReviewDay: true,
+        ),
+      );
       return StudyPlan(
         version: version,
         createdAt: DateTime.now(),
@@ -64,20 +66,24 @@ class StudyPlanGenerator {
       final date = today.add(Duration(days: d - 1));
       final chunk = chunkByDay[d] ?? const [];
       if (isReview(d) || chunk.isEmpty) {
-        days.add(StudyDay(
-          dayNumber: d,
-          date: date,
-          questionIds: List<int>.from(learnedSoFar),
-          isReviewDay: true,
-        ));
+        days.add(
+          StudyDay(
+            dayNumber: d,
+            date: date,
+            questionIds: List<int>.from(learnedSoFar),
+            isReviewDay: true,
+          ),
+        );
       } else {
         learnedSoFar.addAll(chunk);
-        days.add(StudyDay(
-          dayNumber: d,
-          date: date,
-          questionIds: chunk,
-          isReviewDay: false,
-        ));
+        days.add(
+          StudyDay(
+            dayNumber: d,
+            date: date,
+            questionIds: chunk,
+            isReviewDay: false,
+          ),
+        );
       }
     }
 

@@ -77,9 +77,8 @@ class _StateInfoScreenState extends State<StateInfoScreen> {
     );
     await context.read<SettingsProvider>().setStateInfo(info);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('State info saved.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('State info saved.')));
       Navigator.of(context).pop();
     }
   }
@@ -133,14 +132,16 @@ class _StateInfoScreenState extends State<StateInfoScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
-          ...reps.map((r) => SimpleDialogOption(
-                onPressed: () => Navigator.pop(context, r),
-                child: Text(
-                  r.district != null && r.district!.isNotEmpty
-                      ? '${r.name} — District ${r.district}'
-                      : r.name,
-                ),
-              )),
+          ...reps.map(
+            (r) => SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, r),
+              child: Text(
+                r.district != null && r.district!.isNotEmpty
+                    ? '${r.name} — District ${r.district}'
+                    : r.name,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -202,9 +203,11 @@ class _StateInfoScreenState extends State<StateInfoScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.location_city_rounded),
                   title: const Text('State capital'),
-                  subtitle: Text(isDc
-                      ? 'D.C. is not a state and has no capital.'
-                      : _selected!.capital),
+                  subtitle: Text(
+                    isDc
+                        ? 'D.C. is not a state and has no capital.'
+                        : _selected!.capital,
+                  ),
                 ),
               ),
               if (!isDc) ...[
@@ -218,9 +221,11 @@ class _StateInfoScreenState extends State<StateInfoScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.cloud_download_rounded),
-                  label: Text(_refreshing
-                      ? 'Refreshing…'
-                      : 'Refresh reps from Congress.gov'),
+                  label: Text(
+                    _refreshing
+                        ? 'Refreshing…'
+                        : 'Refresh reps from Congress.gov',
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextField(

@@ -1,0 +1,128 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: 3.47.1
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # The release is gated on a green build: no shipping a broken study app.
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test --reporter expanded
+
+      - name: Resolve version
+        id: version
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "number=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      # Per-ABI first, then universal: this order is verified to leave all
+      # four APKs in place.
+      - name: Build release APKs (per ABI)
+        run: flutter build apk --release --split-per-abi
+
+      - name: Build release APK (universal)
+        run: flutter build apk --release
+
+      - name: Build Android App Bundle
+        run: flutter build appbundle --release
+
+      - name: Stage release artifacts
+        run: |
+          set -euo pipefail
+          V="${{ steps.version.outputs.number }}"
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "dist/civics-prep-$V-universal.apk"
+          for abi in armeabi-v7a arm64-v8a x86_64; do
+            cp "build/app/outputs/flutter-apk/app-$abi-release.apk" \
+               "dist/civics-prep-$V-$abi.apk"
+          done
+          cp build/app/outputs/bundle/release/app-release.aab \
+             "dist/civics-prep-$V.aab"
+          (cd dist && sha256sum ./*.apk ./*.aab > SHA256SUMS.txt)
+          ls -lh dist
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Civics Prep ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            dist/*.apk
+            dist/*.aab
+            dist/SHA256SUMS.txt
+          body: |
+            ## Civics Prep ${{ steps.version.outputs.tag }}
+
+            A Flutter study app for the USCIS civics (naturalization) test.
+
+            **Features**
+            - Both official question sets: 2008 (100 questions) and 2020 (128 questions)
+            - Mock tests — read **or hear** each question, **type or speak** your answer
+            - Flashcards with audio, shuffle, star, and mark-known
+            - Study plan generated from your interview date
+            - Browse by topic with search and tap-to-reveal answers
+            - State-specific answers (bundled capitals + optional live Congress.gov refresh)
+
+            **Downloads**
+            - `civics-prep-*-universal.apk` — works on any Android device (largest)
+            - `civics-prep-*-arm64-v8a.apk` — most modern phones (smallest, recommended)
+            - `civics-prep-*.aab` — App Bundle for Play Store upload
+            - `SHA256SUMS.txt` — checksums for the files above
+
+            > These APKs are signed with Flutter's **debug** key so they can be
+            > installed directly for testing. Sign with your own release
+            > keystore before distributing on the Play Store.
+
+            > Study aid only — not affiliated with USCIS. Answers that depend on
+            > current officeholders should be verified at
+            > uscis.gov/citizenship/testupdates.
+
+      - name: Upload artifacts to the workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+          if-no-files-found: error

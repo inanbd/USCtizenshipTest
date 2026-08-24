@@ -11,9 +11,9 @@ class QuestionRepository {
   const QuestionRepository._();
 
   static List<Question> forVersion(TestVersion version) => switch (version) {
-        TestVersion.v2008 => kQuestions2008,
-        TestVersion.v2020 => kQuestions2020,
-      };
+    TestVersion.v2008 => kQuestions2008,
+    TestVersion.v2020 => kQuestions2020,
+  };
 
   static Question? byId(TestVersion version, int id) {
     for (final q in forVersion(version)) {

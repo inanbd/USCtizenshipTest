@@ -34,13 +34,13 @@ class Officials {
   );
 
   String forKind(AnswerKind kind) => switch (kind) {
-        AnswerKind.president => president,
-        AnswerKind.vicePresident => vicePresident,
-        AnswerKind.speaker => speaker,
-        AnswerKind.chiefJustice => chiefJustice,
-        AnswerKind.presidentParty => presidentParty,
-        _ => '',
-      };
+    AnswerKind.president => president,
+    AnswerKind.vicePresident => vicePresident,
+    AnswerKind.speaker => speaker,
+    AnswerKind.chiefJustice => chiefJustice,
+    AnswerKind.presidentParty => presidentParty,
+    _ => '',
+  };
 
   Officials copyWith({
     String? president,
@@ -49,35 +49,33 @@ class Officials {
     String? chiefJustice,
     String? presidentParty,
     DateTime? asOf,
-  }) =>
-      Officials(
-        president: president ?? this.president,
-        vicePresident: vicePresident ?? this.vicePresident,
-        speaker: speaker ?? this.speaker,
-        chiefJustice: chiefJustice ?? this.chiefJustice,
-        presidentParty: presidentParty ?? this.presidentParty,
-        asOf: asOf ?? this.asOf,
-      );
+  }) => Officials(
+    president: president ?? this.president,
+    vicePresident: vicePresident ?? this.vicePresident,
+    speaker: speaker ?? this.speaker,
+    chiefJustice: chiefJustice ?? this.chiefJustice,
+    presidentParty: presidentParty ?? this.presidentParty,
+    asOf: asOf ?? this.asOf,
+  );
 
   Map<String, dynamic> toJson() => {
-        'president': president,
-        'vicePresident': vicePresident,
-        'speaker': speaker,
-        'chiefJustice': chiefJustice,
-        'presidentParty': presidentParty,
-        'asOf': asOf?.toIso8601String(),
-      };
+    'president': president,
+    'vicePresident': vicePresident,
+    'speaker': speaker,
+    'chiefJustice': chiefJustice,
+    'presidentParty': presidentParty,
+    'asOf': asOf?.toIso8601String(),
+  };
 
   factory Officials.fromJson(Map<String, dynamic> json) => Officials(
-        president: json['president'] as String? ?? defaults.president,
-        vicePresident:
-            json['vicePresident'] as String? ?? defaults.vicePresident,
-        speaker: json['speaker'] as String? ?? defaults.speaker,
-        chiefJustice: json['chiefJustice'] as String? ?? defaults.chiefJustice,
-        presidentParty:
-            json['presidentParty'] as String? ?? defaults.presidentParty,
-        asOf: json['asOf'] != null
-            ? DateTime.tryParse(json['asOf'] as String)
-            : null,
-      );
+    president: json['president'] as String? ?? defaults.president,
+    vicePresident: json['vicePresident'] as String? ?? defaults.vicePresident,
+    speaker: json['speaker'] as String? ?? defaults.speaker,
+    chiefJustice: json['chiefJustice'] as String? ?? defaults.chiefJustice,
+    presidentParty:
+        json['presidentParty'] as String? ?? defaults.presidentParty,
+    asOf: json['asOf'] != null
+        ? DateTime.tryParse(json['asOf'] as String)
+        : null,
+  );
 }

@@ -19,18 +19,18 @@ class StudyDay {
   final bool isReviewDay;
 
   Map<String, dynamic> toJson() => {
-        'dayNumber': dayNumber,
-        'date': date.toIso8601String(),
-        'questionIds': questionIds,
-        'isReviewDay': isReviewDay,
-      };
+    'dayNumber': dayNumber,
+    'date': date.toIso8601String(),
+    'questionIds': questionIds,
+    'isReviewDay': isReviewDay,
+  };
 
   factory StudyDay.fromJson(Map<String, dynamic> json) => StudyDay(
-        dayNumber: json['dayNumber'] as int,
-        date: DateTime.parse(json['date'] as String),
-        questionIds: (json['questionIds'] as List).cast<int>(),
-        isReviewDay: json['isReviewDay'] as bool,
-      );
+    dayNumber: json['dayNumber'] as int,
+    date: DateTime.parse(json['date'] as String),
+    questionIds: (json['questionIds'] as List).cast<int>(),
+    isReviewDay: json['isReviewDay'] as bool,
+  );
 }
 
 /// A dated plan that spreads all questions across the days until the test,
@@ -55,30 +55,30 @@ class StudyPlan {
   double get progress => totalDays == 0 ? 0 : completedCount / totalDays;
 
   StudyPlan copyWith({Set<int>? completedDayNumbers}) => StudyPlan(
-        version: version,
-        createdAt: createdAt,
-        testDate: testDate,
-        days: days,
-        completedDayNumbers: completedDayNumbers ?? this.completedDayNumbers,
-      );
+    version: version,
+    createdAt: createdAt,
+    testDate: testDate,
+    days: days,
+    completedDayNumbers: completedDayNumbers ?? this.completedDayNumbers,
+  );
 
   Map<String, dynamic> toJson() => {
-        'version': version.storageKey,
-        'createdAt': createdAt.toIso8601String(),
-        'testDate': testDate.toIso8601String(),
-        'days': days.map((d) => d.toJson()).toList(),
-        'completedDayNumbers': completedDayNumbers.toList(),
-      };
+    'version': version.storageKey,
+    'createdAt': createdAt.toIso8601String(),
+    'testDate': testDate.toIso8601String(),
+    'days': days.map((d) => d.toJson()).toList(),
+    'completedDayNumbers': completedDayNumbers.toList(),
+  };
 
   factory StudyPlan.fromJson(Map<String, dynamic> json) => StudyPlan(
-        version:
-            json['version'] == 'v2020' ? TestVersion.v2020 : TestVersion.v2008,
-        createdAt: DateTime.parse(json['createdAt'] as String),
-        testDate: DateTime.parse(json['testDate'] as String),
-        days: (json['days'] as List)
-            .map((d) => StudyDay.fromJson(d as Map<String, dynamic>))
-            .toList(),
-        completedDayNumbers:
-            (json['completedDayNumbers'] as List).cast<int>().toSet(),
-      );
+    version: json['version'] == 'v2020' ? TestVersion.v2020 : TestVersion.v2008,
+    createdAt: DateTime.parse(json['createdAt'] as String),
+    testDate: DateTime.parse(json['testDate'] as String),
+    days: (json['days'] as List)
+        .map((d) => StudyDay.fromJson(d as Map<String, dynamic>))
+        .toList(),
+    completedDayNumbers: (json['completedDayNumbers'] as List)
+        .cast<int>()
+        .toSet(),
+  );
 }

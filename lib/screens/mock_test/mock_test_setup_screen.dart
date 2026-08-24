@@ -64,12 +64,14 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
       officials: settings.officials,
       state: settings.stateInfo,
     );
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => ChangeNotifierProvider.value(
-        value: controller,
-        child: const MockTestScreen(),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider.value(
+          value: controller,
+          child: const MockTestScreen(),
+        ),
       ),
-    ));
+    );
   }
 
   @override
@@ -95,8 +97,10 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Icon(Icons.record_voice_over_rounded,
-                        color: theme.colorScheme.onSecondaryContainer),
+                    Icon(
+                      Icons.record_voice_over_rounded,
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -113,9 +117,12 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            Text('Question source',
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              'Question source',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 8),
             SegmentedButton<_Source>(
               segments: const [
@@ -127,14 +134,19 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
               onSelectionChanged: (s) => setState(() => _source = s.first),
             ),
             const SizedBox(height: 8),
-            Text('$poolSize questions available in this set.',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                )),
+            Text(
+              '$poolSize questions available in this set.',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
             const SizedBox(height: 24),
-            Text('Number of questions',
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              'Number of questions',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             Slider(
               value: effectiveCount.toDouble(),
               min: 1,
@@ -144,22 +156,27 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
               onChanged: (v) => setState(() => _count = v.round()),
             ),
             Center(
-              child: Text('$effectiveCount questions',
-                  style: theme.textTheme.titleLarge),
+              child: Text(
+                '$effectiveCount questions',
+                style: theme.textTheme.titleLarge,
+              ),
             ),
             const SizedBox(height: 16),
             if (!hasState)
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.location_on_outlined,
-                      color: theme.colorScheme.tertiary),
+                  leading: Icon(
+                    Icons.location_on_outlined,
+                    color: theme.colorScheme.tertiary,
+                  ),
                   title: const Text('Set your state'),
                   subtitle: const Text(
-                      'So state-specific questions can be graded.'),
+                    'So state-specific questions can be graded.',
+                  ),
                   trailing: const Icon(Icons.chevron_right_rounded),
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => const StateInfoScreen(),
-                  )),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const StateInfoScreen()),
+                  ),
                 ),
               ),
             const SizedBox(height: 24),
