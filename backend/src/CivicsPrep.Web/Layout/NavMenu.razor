@@ -1,0 +1,15 @@
+<nav class="nav">
+    <AuthorizeView>
+        <Authorized>
+            <NavLink href="" Match="NavLinkMatch.All">Dashboard</NavLink>
+            <NavLink href="study">Study</NavLink>
+            <NavLink href="flashcards">Flashcards</NavLink>
+            <NavLink href="test">Mock test</NavLink>
+            <NavLink href="plan">Study plan</NavLink>
+            <NavLink href="settings">Settings</NavLink>
+        </Authorized>
+        <NotAuthorized>
+            <NavLink href="study">Browse questions</NavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</nav>

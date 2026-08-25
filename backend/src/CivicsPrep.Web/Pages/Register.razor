@@ -1,0 +1,78 @@
+@page "/register"
+@inject CivicsApiClient Api
+@inject ApiAuthenticationStateProvider AuthState
+@inject NavigationManager Navigation
+
+<PageTitle>Create account — Civics Prep</PageTitle>
+
+<h1>Create your account</h1>
+<p class="muted">Your progress, study plan and test history are saved to your account.</p>
+
+<div class="card" style="max-width:420px">
+    <EditForm Model="@_model" OnValidSubmit="SubmitAsync" FormName="register">
+        <div class="field">
+            <label for="name">Name <span class="muted small">(optional)</span></label>
+            <InputText id="name" @bind-Value="_model.DisplayName" autocomplete="name" />
+        </div>
+
+        <div class="field">
+            <label for="email">Email</label>
+            <InputText id="email" type="email" @bind-Value="_model.Email" autocomplete="username" />
+        </div>
+
+        <div class="field">
+            <label for="password">Password</label>
+            <InputText id="password" type="password" @bind-Value="_model.Password"
+                       autocomplete="new-password" />
+            <p class="muted small" style="margin:.35rem 0 0">
+                At least 8 characters, including a letter and a digit.
+            </p>
+        </div>
+
+        @if (_error is not null)
+        {
+            <p class="alert alert-error" style="margin-top:1rem">@_error</p>
+        }
+
+        <div class="row" style="margin-top:1.1rem">
+            <button class="btn btn-primary" type="submit" disabled="@_busy">
+                @(_busy ? "Creating…" : "Create account")
+            </button>
+            <a class="btn btn-ghost" href="login">I already have one</a>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private readonly RegisterModel _model = new();
+    private string? _error;
+    private bool _busy;
+
+    private async Task SubmitAsync()
+    {
+        _busy = true;
+        _error = null;
+        try
+        {
+            var auth = await Api.RegisterAsync(
+                new RegisterRequest(_model.Email, _model.Password, _model.DisplayName));
+            await AuthState.SignInAsync(auth);
+            Navigation.NavigateTo("");
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private sealed class RegisterModel
+    {
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string? DisplayName { get; set; }
+    }
+}

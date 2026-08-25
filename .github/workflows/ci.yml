@@ -3,7 +3,11 @@ name: CI
 on:
   push:
     branches: ['**']
+    paths-ignore:
+      - 'backend/**'
   pull_request:
+    paths-ignore:
+      - 'backend/**'
   workflow_dispatch:
 
 # Cancel superseded runs on the same ref.

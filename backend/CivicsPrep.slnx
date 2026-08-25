@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CivicsPrep.Api/CivicsPrep.Api.csproj" />
+    <Project Path="src/CivicsPrep.Application/CivicsPrep.Application.csproj" />
+    <Project Path="src/CivicsPrep.Contracts/CivicsPrep.Contracts.csproj" />
+    <Project Path="src/CivicsPrep.Domain/CivicsPrep.Domain.csproj" />
+    <Project Path="src/CivicsPrep.Infrastructure/CivicsPrep.Infrastructure.csproj" />
+    <Project Path="src/CivicsPrep.Web/CivicsPrep.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CivicsPrep.Api.Tests/CivicsPrep.Api.Tests.csproj" />
+    <Project Path="tests/CivicsPrep.Application.Tests/CivicsPrep.Application.Tests.csproj" />
+    <Project Path="tests/CivicsPrep.Domain.Tests/CivicsPrep.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

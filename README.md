@@ -2,8 +2,10 @@
 
 [![CI](https://github.com/inanbd/USCtizenshipTest/actions/workflows/ci.yml/badge.svg)](https://github.com/inanbd/USCtizenshipTest/actions/workflows/ci.yml)
 [![Release](https://github.com/inanbd/USCtizenshipTest/actions/workflows/release.yml/badge.svg)](https://github.com/inanbd/USCtizenshipTest/actions/workflows/release.yml)
+[![Backend CI](https://github.com/inanbd/USCtizenshipTest/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/inanbd/USCtizenshipTest/actions/workflows/backend-ci.yml)
 
-A Flutter app to learn and practice the USCIS civics (naturalization) test. It
+A Flutter app, a .NET 10 backend and a Blazor website for learning and practising
+the USCIS civics (naturalization) test. It
 bundles **both** official question sets, runs mock tests where you can **see and
 hear** each question and **type or speak** your answer, generates a **study
 plan** from your test date, shows **flashcards**, and resolves the
@@ -12,6 +14,32 @@ plan** from your test date, shows **flashcards**, and resolves the
 > ⚠️ Study aid only — not affiliated with USCIS. Some answers change with
 > elections/appointments or depend on your address. Always verify current
 > answers at **uscis.gov/citizenship/testupdates**.
+
+## What is in this repository
+
+| Path | What it is |
+|---|---|
+| `lib/`, `test/`, `android/` | The Flutter mobile app (Android) |
+| `backend/` | .NET 10 solution: API, Blazor website, and their tests |
+
+The app works fully offline against its bundled question set. Signing in adds an
+account whose progress, study plan and test history sync with the website
+through the backend. See [`backend/README.md`](backend/README.md) for the
+architecture, configuration and API reference.
+
+### Running the whole stack
+
+```bash
+# 1. Backend + SQL Server
+cd backend && docker compose up --build      # API on http://localhost:5199
+
+# 2. Website
+dotnet run --project backend/src/CivicsPrep.Web
+
+# 3. App, pointed at the local backend
+#    10.0.2.2 is how the Android emulator reaches the host machine
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5199
+```
 
 ## Features
 
@@ -88,12 +116,17 @@ test/
   services/      answer matcher, study plan generator, Congress.gov client
   providers/     settings/progress/study-plan persistence, mock-test controller
   screens/       end-to-end widget tests for every feature
+  api/           API client and progress sync
   helpers/       plugin channel mocks (TTS/STT) and test fixtures
 ```
 
+The app also has `lib/api/` (backend client, session storage) and
+`lib/providers/auth_provider.dart` + `progress_sync.dart`, which sync progress
+with the backend when the user is signed in.
+
 ## Testing
 
-216 tests cover the app end to end:
+240 tests cover the app end to end:
 
 ```bash
 flutter test
@@ -110,6 +143,11 @@ flutter test
   speaking an answer — the native TTS and speech-to-text channels are mocked in
   `test/helpers/test_harness.dart`, so a simulated recognition result flows into
   the answer field and gets graded just as it would on a device.
+- **Backend client tests** cover sign-in, token refresh-and-retry on a 401, and
+  the progress sync — including that a signed-out app never calls the network and
+  that a failed sync never surfaces as an error to the user.
+
+The backend has its own 125 tests; see [`backend/README.md`](backend/README.md).
 
 ## Continuous integration and releases
 
@@ -118,6 +156,9 @@ flutter test
 - **`.github/workflows/release.yml`** — on a `v*` tag: re-runs all checks, builds
   the universal APK, per-ABI APKs and an App Bundle, and publishes them to a
   GitHub Release with checksums.
+- **`.github/workflows/backend-ci.yml`** — builds and tests the .NET solution,
+  publishes the API and website, and fails if the backend's seed data has drifted
+  from the app's question datasets.
 
 To cut a release:
 

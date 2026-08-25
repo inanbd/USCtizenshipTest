@@ -46,3 +46,9 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# .NET build output
+backend/**/bin/
+backend/**/obj/
+backend/out/
+*.db

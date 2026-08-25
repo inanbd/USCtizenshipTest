@@ -1,0 +1,86 @@
+name: Backend CI
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-and-test:
+    name: Build & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore CivicsPrep.slnx
+
+      - name: Build
+        run: dotnet build CivicsPrep.slnx --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test CivicsPrep.slnx --no-build --configuration Release --verbosity normal
+
+      - name: Publish the API
+        run: dotnet publish src/CivicsPrep.Api -c Release -o out/api --no-build
+
+      - name: Publish the website
+        run: dotnet publish src/CivicsPrep.Web -c Release -o out/web
+
+      - name: Upload published output
+        uses: actions/upload-artifact@v4
+        with:
+          name: civicsprep-backend
+          path: |
+            backend/out/api
+            backend/out/web
+          retention-days: 7
+
+  seed-data-is-current:
+    name: Seed data matches the app datasets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The question set is generated from the Flutter data files. If someone
+      # edits those without regenerating, the backend would serve stale content.
+      - name: Regenerate seed data
+        run: python3 backend/tools/export_seed_data.py . backend/src/CivicsPrep.Infrastructure/SeedData
+
+      - name: Fail if it differs from what is committed
+        run: |
+          if ! git diff --quiet -- backend/src/CivicsPrep.Infrastructure/SeedData; then
+            echo "::error::Seed data is out of date. Run:"
+            echo "  python3 backend/tools/export_seed_data.py . backend/src/CivicsPrep.Infrastructure/SeedData"
+            git diff --stat -- backend/src/CivicsPrep.Infrastructure/SeedData
+            exit 1
+          fi
+          echo "Seed data is current."

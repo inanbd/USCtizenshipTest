@@ -1,0 +1,274 @@
+@page "/test"
+@attribute [Authorize]
+@inject CivicsApiClient Api
+
+<PageTitle>Mock test — Civics Prep</PageTitle>
+
+<h1>Mock test</h1>
+
+@if (_error is not null)
+{
+    <p class="alert alert-error">@_error</p>
+}
+
+@if (_result is not null)
+{
+    <div class="card">
+        <h2>@(_result.Passed ? "You passed!" : "Keep practicing")</h2>
+        <p style="font-size:1.1rem;margin:.25rem 0">
+            <strong>@_result.CorrectCount of @_result.Total correct</strong>
+            · @($"{_result.Score * 100:0}%")
+        </p>
+        <p class="muted small">Passing score: @_result.PassMark/@_result.Total (60%)</p>
+        <button class="btn btn-primary" style="margin-top:.75rem" @onclick="Reset">
+            Take another test
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>Review</h2>
+        <ul class="q-list">
+            @foreach (var a in _result.Answers)
+            {
+                <li>
+                    <span class="q-num">@a.Number</span>
+                    <div style="flex:1">
+                        <strong>@a.Prompt</strong>
+                        <p class="small" style="margin:.35rem 0 0">
+                            <span class="@(a.Correct ? "good" : "bad")">
+                                @(a.Correct ? "Correct" : "Incorrect")
+                            </span>
+                            @if (a.WasOverridden)
+                            {
+                                <span class="muted">(self-graded)</span>
+                            }
+                        </p>
+                        @if (!string.IsNullOrWhiteSpace(a.UserAnswer))
+                        {
+                            <p class="muted small" style="margin:.2rem 0 0">
+                                You said: @a.UserAnswer
+                            </p>
+                        }
+                        <p class="small" style="margin:.2rem 0 0">
+                            Answer: @string.Join(", ", a.AcceptedAnswers)
+                        </p>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else if (_session is null)
+{
+    <div class="card">
+        <p class="muted">
+            The server picks the questions and grades your answers, exactly as the app does.
+        </p>
+        <div class="row" style="margin-top:.75rem">
+            <div>
+                <label for="version">Test</label>
+                <select id="version" @bind="_version">
+                    <option value="@TestVersionDto.V2008">2008 · 10 questions</option>
+                    <option value="@TestVersionDto.V2020">2020 · 20 questions</option>
+                </select>
+            </div>
+            <div>
+                <label for="source">Questions from</label>
+                <select id="source" @bind="_source">
+                    <option value="@TestSourceDto.All">All</option>
+                    <option value="@TestSourceDto.Senior">65/20 set</option>
+                    <option value="@TestSourceDto.Starred">Starred only</option>
+                </select>
+            </div>
+            <div>
+                <label for="count">How many</label>
+                <input id="count" type="number" min="1" max="128" @bind="_count" />
+            </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:1rem" @onclick="StartAsync"
+                disabled="@_busy">
+            @(_busy ? "Starting…" : "Start test")
+        </button>
+    </div>
+}
+else
+{
+    var question = _session.Questions[_ordinal];
+
+    <div class="card">
+        <div class="spread">
+            <span class="muted small">Question @(_ordinal + 1) of @_session.Total</span>
+            <span class="muted small">
+                Correct: @_correctSoFar · need @_session.PassMark
+            </span>
+        </div>
+        <div class="bar" style="margin:.75rem 0">
+            <span style="width:@($"{(double)_ordinal / _session.Total * 100:0}%")"></span>
+        </div>
+
+        <h2 style="margin-top:.5rem">@question.Prompt</h2>
+        @if (question.RequiredCount > 1)
+        {
+            <p class="muted small">Give @question.RequiredCount answers, separated by commas.</p>
+        }
+
+        @if (_feedback is null)
+        {
+            <div class="field" style="margin-top:1rem">
+                <label for="answer">Your answer</label>
+                <input id="answer" type="text" @bind="_answer" @bind:event="oninput"
+                       @onkeydown="OnKeyDown" placeholder="Type your answer" />
+            </div>
+            @if (question.SelfGraded)
+            {
+                <p class="muted small">
+                    This one depends on your state, so you will grade it yourself.
+                </p>
+            }
+            <button class="btn btn-primary" style="margin-top:.75rem" @onclick="SubmitAsync"
+                    disabled="@_busy">Submit answer</button>
+        }
+        else
+        {
+            <div class="alert @(_feedback.Correct ? "alert-info" : "alert-error")"
+                 style="margin-top:1rem">
+                <strong>
+                    @(_feedback.SelfGraded ? "Self-graded" : _feedback.Correct ? "Correct!" : "Not quite")
+                </strong>
+            </div>
+
+            <p class="small" style="margin:.75rem 0 0">
+                Accepted answer@(_feedback.AcceptedAnswers.Count == 1 ? "" : "s"):
+                @string.Join(", ", _feedback.AcceptedAnswers)
+            </p>
+            @if (_feedback.Note is not null)
+            {
+                <p class="muted small">@_feedback.Note</p>
+            }
+
+            <div class="row" style="margin-top:1rem">
+                <span class="muted small">Score this yourself:</span>
+                <button class="btn btn-ghost btn-sm" @onclick="() => OverrideAsync(true)">Right</button>
+                <button class="btn btn-ghost btn-sm" @onclick="() => OverrideAsync(false)">Wrong</button>
+                <span style="flex:1"></span>
+                <button class="btn btn-primary" @onclick="NextAsync" disabled="@_busy">
+                    @(IsLastQuestion ? "See results" : "Next question")
+                </button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private TestSessionDto? _session;
+    private TestResultDto? _result;
+    private AnswerFeedbackDto? _feedback;
+    private string? _error;
+    private string _answer = "";
+    private int _ordinal;
+    private int _correctSoFar;
+    private bool _busy;
+
+    private TestVersionDto _version = TestVersionDto.V2008;
+    private TestSourceDto _source = TestSourceDto.All;
+    private int _count = 10;
+
+    private bool IsLastQuestion => _session is not null && _ordinal >= _session.Total - 1;
+
+    private async Task StartAsync()
+    {
+        _busy = true;
+        _error = null;
+        try
+        {
+            _session = await Api.StartTestAsync(
+                new StartTestRequest(_version, _source, _count));
+            _ordinal = 0;
+            _correctSoFar = 0;
+            _feedback = null;
+            _answer = "";
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && _feedback is null) await SubmitAsync();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (_session is null) return;
+        _busy = true;
+        try
+        {
+            _feedback = await Api.SubmitAnswerAsync(_session.Id, _ordinal, _answer);
+            _correctSoFar = _feedback.CorrectSoFar;
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task OverrideAsync(bool correct)
+    {
+        if (_session is null) return;
+        try
+        {
+            _feedback = await Api.OverrideAnswerAsync(_session.Id, _ordinal, correct);
+            _correctSoFar = _feedback.CorrectSoFar;
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task NextAsync()
+    {
+        if (_session is null) return;
+
+        if (IsLastQuestion)
+        {
+            _busy = true;
+            try
+            {
+                _result = await Api.CompleteTestAsync(_session.Id);
+                _session = null;
+            }
+            catch (ApiException ex)
+            {
+                _error = ex.Message;
+            }
+            finally
+            {
+                _busy = false;
+            }
+            return;
+        }
+
+        _ordinal++;
+        _feedback = null;
+        _answer = "";
+    }
+
+    private void Reset()
+    {
+        _result = null;
+        _session = null;
+        _feedback = null;
+        _answer = "";
+    }
+}

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:citizenship_test/api/auth_store.dart';
+import 'package:citizenship_test/api/civics_api_client.dart';
 import 'package:citizenship_test/app.dart';
 import 'package:citizenship_test/services/congress_api_service.dart';
 import 'package:citizenship_test/services/storage_service.dart';
@@ -141,9 +143,14 @@ Future<StorageService> freshStorage([
 }
 
 /// Builds the full app widget wired with real providers and test services.
+///
+/// [apiClient] lets a test drive the backend-facing behaviour; by default the
+/// app is signed out, which is the offline path every study feature must
+/// keep working on.
 Future<CivicsApp> buildTestApp({
   StorageService? storage,
   http.Client? httpClient,
+  CivicsApiClient? apiClient,
 }) async {
   final store = storage ?? await freshStorage();
   return CivicsApp(
@@ -151,5 +158,6 @@ Future<CivicsApp> buildTestApp({
     tts: TtsService(),
     stt: SttService(),
     congress: CongressApiService(client: httpClient),
+    api: apiClient ?? CivicsApiClient(AuthStore(store), client: httpClient),
   );
 }

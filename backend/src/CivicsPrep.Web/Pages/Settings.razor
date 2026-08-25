@@ -1,0 +1,254 @@
+@page "/settings"
+@attribute [Authorize]
+@inject CivicsApiClient Api
+
+<PageTitle>Settings — Civics Prep</PageTitle>
+
+<h1>Settings</h1>
+
+@if (_error is not null)
+{
+    <p class="alert alert-error">@_error</p>
+}
+@if (_saved is not null)
+{
+    <p class="alert alert-info">@_saved</p>
+}
+
+@if (_loading)
+{
+    <p class="loading">Loading settings…</p>
+}
+else
+{
+    <div class="card">
+        <h2>Which test are you taking?</h2>
+        <select @bind="_version" @bind:after="SaveVersionAsync" style="max-width:320px">
+            <option value="@TestVersionDto.V2008">2008 test · 100 questions</option>
+            <option value="@TestVersionDto.V2020">2020 test · 128 questions</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <h2>My state</h2>
+        <p class="muted small">
+            Four questions depend on where you live. The capital comes from us; the people are
+            yours to fill in.
+        </p>
+
+        <div class="field">
+            <label for="state">State</label>
+            <select id="state" @bind="_stateCode" style="max-width:320px">
+                <option value="">Select your state…</option>
+                @foreach (var s in _states)
+                {
+                    <option value="@s.Code">@s.Name</option>
+                }
+            </select>
+        </div>
+
+        @if (SelectedState is { } selected)
+        {
+            <p class="muted small">
+                Capital:
+                <strong>@(selected.IsDistrictOfColumbia ? "D.C. is not a state" : selected.Capital)</strong>
+            </p>
+
+            @if (!selected.IsDistrictOfColumbia)
+            {
+                <div class="field">
+                    <label for="gov">Governor</label>
+                    <input id="gov" type="text" @bind="_governor" />
+                </div>
+                <div class="field">
+                    <label for="sen1">U.S. Senator 1</label>
+                    <input id="sen1" type="text" @bind="_senatorOne" />
+                </div>
+                <div class="field">
+                    <label for="sen2">U.S. Senator 2</label>
+                    <input id="sen2" type="text" @bind="_senatorTwo" />
+                </div>
+                <div class="field">
+                    <label for="rep">U.S. Representative</label>
+                    <input id="rep" type="text" @bind="_representative" />
+                    <p class="muted small" style="margin:.3rem 0 0">
+                        Depends on your congressional district.
+                    </p>
+                </div>
+
+                <div class="row" style="margin-top:.5rem">
+                    <button class="btn btn-ghost btn-sm" @onclick="LookupAsync" disabled="@_busy">
+                        Look up from Congress.gov
+                    </button>
+                </div>
+
+                @if (_congress.Count > 0)
+                {
+                    <ul class="q-list" style="margin-top:.5rem">
+                        @foreach (var m in _congress)
+                        {
+                            <li>
+                                <div style="flex:1">
+                                    <strong>@m.Name</strong>
+                                    <span class="muted small">
+                                        @m.Chamber @(m.District is null ? "" : $"· District {m.District}")
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            }
+        }
+
+        <button class="btn btn-primary" style="margin-top:1rem" @onclick="SaveStateAsync"
+                disabled="@(_busy || string.IsNullOrWhiteSpace(_stateCode))">
+            Save state info
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>Current officials</h2>
+        <p class="muted small">
+            These change with elections and appointments. Leave a field blank to use the
+            server's answer. Verify at
+            <a href="https://www.uscis.gov/citizenship/testupdates" target="_blank"
+               rel="noopener">uscis.gov/citizenship/testupdates</a>.
+        </p>
+
+        <div class="field">
+            <label for="pres">President</label>
+            <input id="pres" type="text" @bind="_president" />
+        </div>
+        <div class="field">
+            <label for="vp">Vice President</label>
+            <input id="vp" type="text" @bind="_vicePresident" />
+        </div>
+        <div class="field">
+            <label for="spk">Speaker of the House</label>
+            <input id="spk" type="text" @bind="_speaker" />
+        </div>
+        <div class="field">
+            <label for="cj">Chief Justice</label>
+            <input id="cj" type="text" @bind="_chiefJustice" />
+        </div>
+        <div class="field">
+            <label for="party">President's party</label>
+            <input id="party" type="text" @bind="_presidentParty" />
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:1rem" @onclick="SaveOfficialsAsync"
+                disabled="@_busy">Save officials</button>
+    </div>
+
+    <div class="card">
+        <h2>Progress</h2>
+        <button class="btn btn-ghost" @onclick="ResetProgressAsync" disabled="@_busy">
+            Reset "known" marks for this test
+        </button>
+    </div>
+}
+
+@code {
+    private IReadOnlyList<StateDto> _states = [];
+    private List<CongressMemberDto> _congress = [];
+    private string? _error;
+    private string? _saved;
+    private bool _loading = true;
+    private bool _busy;
+
+    private TestVersionDto _version = TestVersionDto.V2008;
+    private string _stateCode = "";
+    private string? _governor, _senatorOne, _senatorTwo, _representative;
+    private string? _president, _vicePresident, _speaker, _chiefJustice, _presidentParty;
+
+    private StateDto? SelectedState =>
+        _states.FirstOrDefault(s => s.Code == _stateCode);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _states = await Api.GetStatesAsync();
+
+            var settings = await Api.GetSettingsAsync();
+            _version = settings.TestVersion;
+
+            var info = await Api.GetStateInfoAsync();
+            _stateCode = info.StateCode ?? "";
+            _governor = info.Governor;
+            _senatorOne = info.Senators.ElementAtOrDefault(0);
+            _senatorTwo = info.Senators.ElementAtOrDefault(1);
+            _representative = info.Representative;
+
+            var officials = await Api.GetOfficialsAsync();
+            _president = officials.President;
+            _vicePresident = officials.VicePresident;
+            _speaker = officials.Speaker;
+            _chiefJustice = officials.ChiefJustice;
+            _presidentParty = officials.PresidentParty;
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task SaveVersionAsync() => await Guarded(async () =>
+    {
+        await Api.UpdateSettingsAsync(_version);
+        _saved = "Test version saved.";
+    });
+
+    private async Task SaveStateAsync() => await Guarded(async () =>
+    {
+        await Api.UpdateStateInfoAsync(new UpdateStateInfoRequest(
+            _stateCode, _governor, _senatorOne, _senatorTwo, _representative));
+        _saved = "State info saved.";
+    });
+
+    private async Task SaveOfficialsAsync() => await Guarded(async () =>
+    {
+        await Api.UpdateOfficialsAsync(new UpdateOfficialsRequest(
+            _president, _vicePresident, _speaker, _chiefJustice, _presidentParty));
+        _saved = "Officials saved.";
+    });
+
+    private async Task ResetProgressAsync() => await Guarded(async () =>
+    {
+        await Api.ResetProgressAsync(_version);
+        _saved = "Progress reset.";
+    });
+
+    private async Task LookupAsync() => await Guarded(async () =>
+    {
+        _congress = [.. await Api.LookupCongressAsync(_stateCode)];
+        _saved = _congress.Count == 0
+            ? "No members returned."
+            : "Pick your representative from the list and copy the name in.";
+    });
+
+    /// <summary>Runs an action, surfacing whatever the API said instead of throwing at the user.</summary>
+    private async Task Guarded(Func<Task> action)
+    {
+        _busy = true;
+        _error = null;
+        _saved = null;
+        try
+        {
+            await action();
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+}

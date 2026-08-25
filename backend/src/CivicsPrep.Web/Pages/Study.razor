@@ -1,0 +1,205 @@
+@page "/study"
+@inject CivicsApiClient Api
+
+<PageTitle>Browse questions — Civics Prep</PageTitle>
+
+<h1>Questions</h1>
+
+<div class="card">
+    <div class="row">
+        <div style="flex:1;min-width:220px">
+            <label for="search">Search</label>
+            <input id="search" type="text" placeholder="Question, answer or number"
+                   value="@_search" @oninput="OnSearchChanged" />
+        </div>
+        <div>
+            <label for="version">Test</label>
+            <select id="version" value="@_version" @onchange="OnVersionChanged">
+                <option value="@TestVersionDto.V2008">2008 · 100 questions</option>
+                <option value="@TestVersionDto.V2020">2020 · 128 questions</option>
+            </select>
+        </div>
+        <div>
+            <label for="filter">Show</label>
+            <select id="filter" value="@_filter" @onchange="OnFilterChanged">
+                <option value="All">All</option>
+                <option value="Senior">65/20 only</option>
+                <AuthorizeView Context="auth">
+                    <Authorized>
+                        <option value="Starred">Starred</option>
+                        <option value="NotLearned">Not yet known</option>
+                    </Authorized>
+                </AuthorizeView>
+            </select>
+        </div>
+    </div>
+</div>
+
+@if (_error is not null)
+{
+    <p class="alert alert-error" style="margin-top:1rem">@_error</p>
+}
+else if (_list is null)
+{
+    <p class="loading" style="margin-top:1rem">Loading questions…</p>
+}
+else
+{
+    <p class="muted small" style="margin:1rem 0 .5rem">
+        @_list.Total question@(_list.Total == 1 ? "" : "s")
+        · @_list.AskedCount asked at the interview, pass with @_list.PassCount
+    </p>
+
+    @if (_list.Total == 0)
+    {
+        <div class="card"><p class="muted" style="margin:0">No questions match that search.</p></div>
+    }
+    else
+    {
+        @foreach (var group in _list.Questions.GroupBy(q => q.Section))
+        {
+            <div class="card" style="margin-top:1rem">
+                <h2>@group.Key</h2>
+                <ul class="q-list">
+                    @foreach (var q in group)
+                    {
+                        <li>
+                            <span class="q-num @(q.IsLearned ? "known" : "")">@q.Number</span>
+                            <div style="flex:1">
+                                <div class="spread">
+                                    <strong>@q.Prompt</strong>
+                                    @if (q.Senior)
+                                    {
+                                        <span class="tag tag-senior">65/20</span>
+                                    }
+                                </div>
+
+                                @if (_revealed.Contains(q.Number))
+                                {
+                                    @if (q.NeedsUserData)
+                                    {
+                                        <p class="alert alert-info small" style="margin:.5rem 0 0">
+                                            This answer depends on your state.
+                                            <a href="settings">Set your state info</a>.
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <ul class="answers">
+                                            @foreach (var a in q.Answers)
+                                            {
+                                                <li>@a</li>
+                                            }
+                                        </ul>
+                                    }
+
+                                    @if (q.RequiredCount > 1)
+                                    {
+                                        <p class="muted small" style="margin:.3rem 0 0">
+                                            Give @q.RequiredCount answers.
+                                        </p>
+                                    }
+                                    @if (q.Note is not null)
+                                    {
+                                        <p class="muted small" style="margin:.3rem 0 0">@q.Note</p>
+                                    }
+                                }
+
+                                <div class="row" style="margin-top:.5rem">
+                                    <button class="btn btn-ghost btn-sm" @onclick="() => Toggle(q.Number)">
+                                        @(_revealed.Contains(q.Number) ? "Hide answer" : "Show answer")
+                                    </button>
+                                    <AuthorizeView Context="auth">
+                                        <Authorized>
+                                            <button class="btn btn-ghost btn-sm"
+                                                    @onclick="() => SetLearnedAsync(q, !q.IsLearned)">
+                                                @(q.IsLearned ? "✓ Known" : "Mark known")
+                                            </button>
+                                            <button class="btn btn-ghost btn-sm"
+                                                    @onclick="() => SetFavoriteAsync(q, !q.IsFavorite)">
+                                                @(q.IsFavorite ? "★ Starred" : "☆ Star")
+                                            </button>
+                                        </Authorized>
+                                    </AuthorizeView>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+}
+
+@code {
+    private QuestionListDto? _list;
+    private string? _error;
+    private string _search = "";
+    private string _filter = "All";
+    private TestVersionDto _version = TestVersionDto.V2008;
+    private readonly HashSet<int> _revealed = [];
+
+    // Debounces typing so we do not fire a request per keystroke.
+    private CancellationTokenSource? _debounce;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _error = null;
+            _list = await Api.GetQuestionsAsync(_version, _filter, _search);
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task OnSearchChanged(ChangeEventArgs e)
+    {
+        _search = e.Value?.ToString() ?? "";
+
+        _debounce?.Cancel();
+        _debounce = new CancellationTokenSource();
+        var token = _debounce.Token;
+        try
+        {
+            await Task.Delay(250, token);
+            await LoadAsync();
+            StateHasChanged();
+        }
+        catch (TaskCanceledException) { /* superseded by a newer keystroke */ }
+    }
+
+    private async Task OnVersionChanged(ChangeEventArgs e)
+    {
+        _version = Enum.Parse<TestVersionDto>(e.Value?.ToString() ?? nameof(TestVersionDto.V2008));
+        _revealed.Clear();
+        await LoadAsync();
+    }
+
+    private async Task OnFilterChanged(ChangeEventArgs e)
+    {
+        _filter = e.Value?.ToString() ?? "All";
+        await LoadAsync();
+    }
+
+    private void Toggle(int number)
+    {
+        if (!_revealed.Add(number)) _revealed.Remove(number);
+    }
+
+    private async Task SetLearnedAsync(QuestionDto q, bool learned)
+    {
+        await Api.SetQuestionProgressAsync(q.Number, learned, null, _version);
+        await LoadAsync();
+    }
+
+    private async Task SetFavoriteAsync(QuestionDto q, bool favorite)
+    {
+        await Api.SetQuestionProgressAsync(q.Number, null, favorite, _version);
+        await LoadAsync();
+    }
+}

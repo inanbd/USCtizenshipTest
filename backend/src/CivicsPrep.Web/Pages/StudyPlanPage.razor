@@ -1,0 +1,168 @@
+@page "/plan"
+@attribute [Authorize]
+@inject CivicsApiClient Api
+
+<PageTitle>Study plan — Civics Prep</PageTitle>
+
+<h1>Study plan</h1>
+
+@if (_error is not null)
+{
+    <p class="alert alert-error">@_error</p>
+}
+
+@if (_loading)
+{
+    <p class="loading">Loading your plan…</p>
+}
+else if (_plan is null)
+{
+    <div class="card">
+        <p class="muted">
+            Pick your interview date and we will spread every question across the days,
+            with review days built in.
+        </p>
+        <div class="row" style="margin-top:.75rem">
+            <div>
+                <label for="date">Test date</label>
+                <input id="date" type="date" @bind="_testDate" />
+            </div>
+            <div>
+                <label for="version">Test</label>
+                <select id="version" @bind="_version">
+                    <option value="@TestVersionDto.V2008">2008 · 100 questions</option>
+                    <option value="@TestVersionDto.V2020">2020 · 128 questions</option>
+                </select>
+            </div>
+        </div>
+        <label class="row small" style="margin-top:.75rem;font-weight:500">
+            <input type="checkbox" @bind="_seniorOnly" style="width:auto" />
+            65/20 questions only
+        </label>
+        <button class="btn btn-primary" style="margin-top:1rem" @onclick="CreateAsync"
+                disabled="@_busy">
+            @(_busy ? "Building…" : "Create study plan")
+        </button>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="spread">
+            <div>
+                <h2 style="margin:0">@_plan.TotalDays-day plan</h2>
+                <p class="muted small" style="margin:.2rem 0 0">
+                    Test on @_plan.TestDate.ToString("D")
+                </p>
+            </div>
+            <button class="btn btn-ghost btn-sm" @onclick="DeleteAsync">Clear plan</button>
+        </div>
+        <div class="bar" style="margin:.9rem 0 .5rem">
+            <span style="width:@($"{_plan.Progress * 100:0}%")"></span>
+        </div>
+        <p class="muted small" style="margin:0">
+            @_plan.CompletedCount of @_plan.TotalDays days complete
+        </p>
+    </div>
+
+    @foreach (var day in _plan.Days)
+    {
+        var isToday = day.Date == DateOnly.FromDateTime(DateTime.Now);
+        <div class="card" style="@(isToday ? "border-color:var(--navy)" : "")">
+            <div class="spread">
+                <div class="row" style="gap:.6rem">
+                    <input type="checkbox" checked="@day.IsComplete" style="width:auto"
+                           @onchange="() => ToggleDayAsync(day)" />
+                    <div>
+                        <strong>Day @day.DayNumber</strong>
+                        @if (isToday)
+                        {
+                            <span class="tag" style="margin-left:.4rem">TODAY</span>
+                        }
+                        <p class="muted small" style="margin:.15rem 0 0">
+                            @day.Date.ToString("ddd, MMM d") ·
+                            @(day.IsReviewDay
+                                ? $"Review {day.QuestionNumbers.Count} questions"
+                                : $"{day.QuestionNumbers.Count} new questions")
+                        </p>
+                    </div>
+                </div>
+                <a class="btn btn-ghost btn-sm" href="study">Open</a>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private StudyPlanDto? _plan;
+    private string? _error;
+    private bool _loading = true;
+    private bool _busy;
+
+    private DateOnly _testDate = DateOnly.FromDateTime(DateTime.Now).AddDays(14);
+    private TestVersionDto _version = TestVersionDto.V2008;
+    private bool _seniorOnly;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+        _loading = false;
+    }
+
+    private async Task LoadAsync()
+    {
+        try
+        {
+            _error = null;
+            _plan = await Api.GetStudyPlanAsync();
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        _busy = true;
+        try
+        {
+            _error = null;
+            _plan = await Api.CreateStudyPlanAsync(
+                new CreateStudyPlanRequest(_testDate, _version, _seniorOnly));
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task ToggleDayAsync(StudyPlanDayDto day)
+    {
+        try
+        {
+            _plan = await Api.SetDayCompleteAsync(day.DayNumber, !day.IsComplete);
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        try
+        {
+            await Api.DeleteStudyPlanAsync();
+            _plan = null;
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+    }
+}

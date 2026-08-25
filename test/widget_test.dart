@@ -1,3 +1,5 @@
+import 'package:citizenship_test/api/auth_store.dart';
+import 'package:citizenship_test/api/civics_api_client.dart';
 import 'package:citizenship_test/app.dart';
 import 'package:citizenship_test/services/congress_api_service.dart';
 import 'package:citizenship_test/services/storage_service.dart';
@@ -17,6 +19,7 @@ void main() {
         tts: TtsService(),
         stt: SttService(),
         congress: CongressApiService(),
+        api: CivicsApiClient(AuthStore(storage)),
       ),
     );
     await tester.pumpAndSettle();

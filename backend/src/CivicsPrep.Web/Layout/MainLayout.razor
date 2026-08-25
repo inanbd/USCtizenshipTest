@@ -1,0 +1,56 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <header class="topbar">
+        <a class="brand" href="">
+            <span class="brand-mark">★</span>
+            <span>Civics Prep</span>
+        </a>
+        <NavMenu />
+        <div class="account">
+            <AuthorizeView>
+                <Authorized>
+                    <span class="who">@context.User.Identity?.Name</span>
+                    <button class="btn btn-ghost" @onclick="SignOutAsync">Sign out</button>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="btn btn-ghost" href="login">Sign in</a>
+                    <a class="btn btn-primary" href="register">Create account</a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </header>
+
+    <main>
+        @Body
+    </main>
+
+    <footer>
+        Study aid only, not affiliated with USCIS. Verify answers that depend on current
+        officeholders at
+        <a href="https://www.uscis.gov/citizenship/testupdates" target="_blank"
+           rel="noopener">uscis.gov/citizenship/testupdates</a>.
+    </footer>
+</div>
+
+@inject ApiAuthenticationStateProvider AuthState
+@inject CivicsApiClient Api
+@inject IBrowserStorage Storage
+@inject NavigationManager Navigation
+
+@code {
+    private async Task SignOutAsync()
+    {
+        var refreshToken = await Storage.GetAsync(
+            ApiAuthenticationStateProvider.RefreshTokenKey);
+
+        if (!string.IsNullOrWhiteSpace(refreshToken))
+        {
+            // Best effort: the local session is cleared even if the API call fails.
+            try { await Api.LogoutAsync(refreshToken); } catch (ApiException) { }
+        }
+
+        await AuthState.SignOutAsync();
+        Navigation.NavigateTo("", forceLoad: false);
+    }
+}

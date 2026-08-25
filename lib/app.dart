@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'api/civics_api_client.dart';
+import 'providers/auth_provider.dart';
 import 'providers/progress_provider.dart';
+import 'providers/progress_sync.dart';
 import 'providers/settings_provider.dart';
 import 'providers/study_plan_provider.dart';
 import 'screens/home_screen.dart';
@@ -18,12 +21,14 @@ class CivicsApp extends StatelessWidget {
     required this.tts,
     required this.stt,
     required this.congress,
+    required this.api,
   });
 
   final StorageService storage;
   final TtsService tts;
   final SttService stt;
   final CongressApiService congress;
+  final CivicsApiClient api;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +38,15 @@ class CivicsApp extends StatelessWidget {
         Provider<TtsService>.value(value: tts),
         Provider<SttService>.value(value: stt),
         Provider<CongressApiService>.value(value: congress),
+        Provider<CivicsApiClient>.value(value: api),
         // Listenable app state.
         ChangeNotifierProvider(create: (_) => SettingsProvider(storage)),
+        ChangeNotifierProvider(create: (_) => AuthProvider(api)),
         ChangeNotifierProvider(create: (_) => ProgressProvider(storage)),
+        // Bridges local progress and the backend once the user signs in.
+        ProxyProvider<ProgressProvider, ProgressSync>(
+          update: (_, progress, _) => ProgressSync(api, progress),
+        ),
         ChangeNotifierProvider(create: (_) => StudyPlanProvider(storage)),
       ],
       child: Consumer<SettingsProvider>(

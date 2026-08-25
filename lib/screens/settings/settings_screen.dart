@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/enums.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/progress_provider.dart';
+import '../../providers/progress_sync.dart';
 import '../../providers/settings_provider.dart';
 import '../../services/tts_service.dart';
+import '../auth/sign_in_screen.dart';
 import 'officials_screen.dart';
 import 'state_info_screen.dart';
 
@@ -21,6 +24,9 @@ class SettingsScreen extends StatelessWidget {
       body: SafeArea(
         child: ListView(
           children: [
+            _header(context, 'Account'),
+            const _AccountTile(),
+
             _header(context, 'Test'),
             ListTile(
               leading: const Icon(Icons.rule_rounded),
@@ -190,5 +196,43 @@ class SettingsScreen extends StatelessWidget {
     if (ok == true && context.mounted) {
       await context.read<ProgressProvider>().resetLearned(version);
     }
+  }
+}
+
+/// Shows who is signed in, or offers to sign in so progress syncs.
+class _AccountTile extends StatelessWidget {
+  const _AccountTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
+    if (!auth.isSignedIn) {
+      return ListTile(
+        leading: const Icon(Icons.cloud_off_rounded),
+        title: const Text('Not signed in'),
+        subtitle: const Text('Sign in to sync progress with the website'),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        onTap: () =>
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const SignInScreen())),
+      );
+    }
+
+    return ListTile(
+      leading: const Icon(Icons.cloud_done_rounded),
+      title: Text(auth.user?.label ?? 'Signed in'),
+      subtitle: const Text('Progress syncs with the website'),
+      trailing: TextButton(
+        onPressed: () async {
+          final version = context.read<SettingsProvider>().testVersion;
+          // Push anything studied on this device before the session ends.
+          await context.read<ProgressSync>().pushAll(version);
+          if (!context.mounted) return;
+          await context.read<AuthProvider>().logout();
+        },
+        child: const Text('Sign out'),
+      ),
+    );
   }
 }

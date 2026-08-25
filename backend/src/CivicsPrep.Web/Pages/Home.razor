@@ -1,0 +1,142 @@
+@page "/"
+@inject CivicsApiClient Api
+@inject NavigationManager Navigation
+
+<PageTitle>Civics Prep — U.S. Citizenship Test</PageTitle>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h1>Pass the U.S. citizenship civics test</h1>
+        <p class="muted" style="max-width:60ch">
+            Both official question sets, mock tests that grade your written answers, flashcards,
+            and a study plan built from your interview date.
+        </p>
+        <div class="row" style="margin:1.25rem 0 2rem">
+            <a class="btn btn-primary" href="register">Create a free account</a>
+            <a class="btn btn-ghost" href="study">Browse the questions</a>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Two official sets</h2>
+                <p class="muted small">
+                    The 2008 test (100 questions, pass with 6 of 10) and the 2020 test
+                    (128 questions, pass with 12 of 20).
+                </p>
+            </div>
+            <div class="card">
+                <h2>Graded mock tests</h2>
+                <p class="muted small">
+                    Type your answer in your own words. Grading is lenient about wording but
+                    strict where it matters.
+                </p>
+            </div>
+            <div class="card">
+                <h2>Answers for your state</h2>
+                <p class="muted small">
+                    Your capital, governor, senators and representative fill in the questions
+                    that depend on where you live.
+                </p>
+            </div>
+        </div>
+    </NotAuthorized>
+
+    <Authorized>
+        <h1>Your dashboard</h1>
+
+        @if (_loading)
+        {
+            <p class="loading">Loading your progress…</p>
+        }
+        else if (_error is not null)
+        {
+            <p class="alert alert-error">@_error</p>
+        }
+        else if (_progress is not null)
+        {
+            <div class="card">
+                <div class="spread">
+                    <h2 style="margin:0">Progress</h2>
+                    <span class="tag">@VersionLabel(_progress.Version)</span>
+                </div>
+                <div class="bar" style="margin:.9rem 0 .5rem">
+                    <span style="width:@($"{_progress.LearnedRatio * 100:0}%")"></span>
+                </div>
+                <p class="muted small" style="margin:0">
+                    @_progress.LearnedCount of @_progress.Total marked known
+                    · @_progress.FavoriteCount starred
+                </p>
+
+                @if (_progress.LastResult is { } last)
+                {
+                    <hr style="border:none;border-top:1px solid var(--line);margin:1rem 0" />
+                    <p style="margin:0">
+                        Last mock test:
+                        <strong>@last.CorrectCount / @last.Total</strong>
+                        @if (last.Passed)
+                        {
+                            <span class="good">· Passed</span>
+                        }
+                        else
+                        {
+                            <span class="bad">· Keep practicing</span>
+                        }
+                    </p>
+                }
+            </div>
+
+            <div class="grid" style="margin-top:1rem">
+                <a class="card" href="test" style="text-decoration:none;color:inherit">
+                    <h2>Mock test</h2>
+                    <p class="muted small">
+                        @_progress.Total questions available. Pass at 60%.
+                    </p>
+                </a>
+                <a class="card" href="flashcards" style="text-decoration:none;color:inherit">
+                    <h2>Flashcards</h2>
+                    <p class="muted small">Flip through every question and mark what you know.</p>
+                </a>
+                <a class="card" href="plan" style="text-decoration:none;color:inherit">
+                    <h2>Study plan</h2>
+                    <p class="muted small">A day-by-day plan built from your interview date.</p>
+                </a>
+                <a class="card" href="study" style="text-decoration:none;color:inherit">
+                    <h2>Browse questions</h2>
+                    <p class="muted small">Search by topic, question or answer.</p>
+                </a>
+            </div>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private ProgressSummaryDto? _progress;
+    private string? _error;
+    private bool _loading = true;
+
+    [CascadingParameter] private Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthStateTask is null) { _loading = false; return; }
+
+        var state = await AuthStateTask;
+        if (state.User.Identity?.IsAuthenticated != true) { _loading = false; return; }
+
+        try
+        {
+            _progress = await Api.GetProgressAsync();
+        }
+        catch (ApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private static string VersionLabel(TestVersionDto v) =>
+        v == TestVersionDto.V2020 ? "2020 · 128Q" : "2008 · 100Q";
+}
