@@ -1,7 +1,7 @@
 namespace CivicsPrep.Contracts.Common;
 
 /// <summary>Wire representation of the test version. Mirrors the domain enum.</summary>
-public enum TestVersionDto { V2008 = 1, V2020 = 2 }
+public enum TestVersionDto { V2008 = 1, V2020 = 2, V2025 = 3 }
 
 public enum QuestionCategoryDto { AmericanGovernment = 1, AmericanHistory = 2, IntegratedCivics = 3 }
 

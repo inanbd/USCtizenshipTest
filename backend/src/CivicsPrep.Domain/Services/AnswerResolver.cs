@@ -14,11 +14,17 @@ public static class AnswerResolver
     /// The accepted answers to grade against. Empty means the user has not supplied the data
     /// yet, so the question cannot be auto-graded.
     /// </summary>
+    /// <param name="seededGovernor">
+    /// The governor from the server's maintained table, used when the user has not named one
+    /// themselves. A name the user typed always wins - they know their state better than a
+    /// table that is only as fresh as its last update.
+    /// </param>
     public static IReadOnlyList<string> Resolve(
         Question question,
         UserProfile? profile,
         UsState? state,
-        CurrentOfficials officials)
+        CurrentOfficials officials,
+        string? seededGovernor = null)
     {
         switch (question.Kind)
         {
@@ -42,7 +48,10 @@ public static class AnswerResolver
             case AnswerKind.Governor:
                 if (state is null) return [];
                 if (state.IsDistrictOfColumbia) return ["D.C. does not have a Governor."];
-                return string.IsNullOrWhiteSpace(profile?.Governor) ? [] : [profile!.Governor!.Trim()];
+                var governor = string.IsNullOrWhiteSpace(profile?.Governor)
+                    ? seededGovernor
+                    : profile!.Governor;
+                return string.IsNullOrWhiteSpace(governor) ? [] : [governor.Trim()];
 
             case AnswerKind.StateSenator:
                 if (state is null) return [];
@@ -69,8 +78,13 @@ public static class AnswerResolver
 
     /// <summary>True when the user still needs to supply data before this can be graded.</summary>
     public static bool NeedsUserData(
-        Question question, UserProfile? profile, UsState? state, CurrentOfficials officials) =>
-        question.IsStateDependent && Resolve(question, profile, state, officials).Count == 0;
+        Question question,
+        UserProfile? profile,
+        UsState? state,
+        CurrentOfficials officials,
+        string? seededGovernor = null) =>
+        question.IsStateDependent
+        && Resolve(question, profile, state, officials, seededGovernor).Count == 0;
 
     private static string OfficialFor(
         AnswerKind kind, UserProfile? profile, CurrentOfficials defaults) => kind switch

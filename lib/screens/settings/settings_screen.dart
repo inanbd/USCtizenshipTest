@@ -31,20 +31,20 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.rule_rounded),
               title: const Text('Test version'),
-              subtitle: Text(settings.testVersion.label),
+              subtitle: Text(
+                '${settings.testVersion.label}\n'
+                '${settings.testVersion.applicability}',
+              ),
+              isThreeLine: true,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SegmentedButton<TestVersion>(
+                showSelectedIcon: false,
                 segments: const [
-                  ButtonSegment(
-                    value: TestVersion.v2008,
-                    label: Text('2008 · 100Q'),
-                  ),
-                  ButtonSegment(
-                    value: TestVersion.v2020,
-                    label: Text('2020 · 128Q'),
-                  ),
+                  ButtonSegment(value: TestVersion.v2025, label: Text('2025')),
+                  ButtonSegment(value: TestVersion.v2008, label: Text('2008')),
+                  ButtonSegment(value: TestVersion.v2020, label: Text('2020')),
                 ],
                 selected: {settings.testVersion},
                 onSelectionChanged: (s) =>

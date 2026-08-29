@@ -17,10 +17,12 @@ public static class QuestionProjection
         UsState? state,
         CurrentOfficials officials,
         IReadOnlySet<int> learned,
-        IReadOnlySet<int> favorites)
+        IReadOnlySet<int> favorites,
+        string? seededGovernor = null)
     {
-        var resolved = AnswerResolver.Resolve(question, profile, state, officials);
-        var needsUserData = AnswerResolver.NeedsUserData(question, profile, state, officials);
+        var resolved = AnswerResolver.Resolve(question, profile, state, officials, seededGovernor);
+        var needsUserData =
+            AnswerResolver.NeedsUserData(question, profile, state, officials, seededGovernor);
 
         // When a state answer is missing we still show the official placeholder so the client has
         // something to display, and flag it via NeedsUserData.

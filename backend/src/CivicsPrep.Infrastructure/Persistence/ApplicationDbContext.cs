@@ -17,6 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<QuestionAnswer> QuestionAnswers => Set<QuestionAnswer>();
     public DbSet<UsState> States => Set<UsState>();
+    public DbSet<Governor> Governors => Set<Governor>();
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
     public DbSet<UserQuestionProgress> UserQuestionProgress => Set<UserQuestionProgress>();
     public DbSet<TestSession> TestSessions => Set<TestSession>();

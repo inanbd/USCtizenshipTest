@@ -1,0 +1,257 @@
+{
+  "asOf": "2026-08-29",
+  "source": "Wikidata SPARQL (P6 position held, latest start date, no end date)",
+  "note": "Governors change with elections. This table is served by the API so it can be corrected without an app release. Applicants should verify at uscis.gov/citizenship/testupdates.",
+  "governors": [
+    {
+      "stateCode": "AK",
+      "name": "Mike J. Dunleavy",
+      "since": "2018-12-03"
+    },
+    {
+      "stateCode": "AL",
+      "name": "Kay Ivey",
+      "since": "2017-04-10"
+    },
+    {
+      "stateCode": "AR",
+      "name": "Sarah Huckabee Sanders",
+      "since": "2023-01-10"
+    },
+    {
+      "stateCode": "AZ",
+      "name": "Katie Hobbs",
+      "since": "2023-01-02"
+    },
+    {
+      "stateCode": "CA",
+      "name": "Gavin Newsom",
+      "since": "2019-01-07"
+    },
+    {
+      "stateCode": "CO",
+      "name": "Jared Polis",
+      "since": "2019-01-08"
+    },
+    {
+      "stateCode": "CT",
+      "name": "Ned Lamont",
+      "since": "2019-01-09"
+    },
+    {
+      "stateCode": "DE",
+      "name": "Matt Meyer",
+      "since": "2025-01-21"
+    },
+    {
+      "stateCode": "FL",
+      "name": "Ron DeSantis",
+      "since": "2019-01-08"
+    },
+    {
+      "stateCode": "GA",
+      "name": "Brian Kemp",
+      "since": "2019-01-14"
+    },
+    {
+      "stateCode": "HI",
+      "name": "Josh Green",
+      "since": "2022-12-05"
+    },
+    {
+      "stateCode": "IA",
+      "name": "Kim Reynolds",
+      "since": "2017-05-24"
+    },
+    {
+      "stateCode": "ID",
+      "name": "Brad Little",
+      "since": "2019-01-07"
+    },
+    {
+      "stateCode": "IL",
+      "name": "JB Pritzker",
+      "since": "2019-01-14"
+    },
+    {
+      "stateCode": "IN",
+      "name": "Eric Holcomb",
+      "since": "2017-01-09"
+    },
+    {
+      "stateCode": "KS",
+      "name": "Laura Kelly",
+      "since": "2019-01-14"
+    },
+    {
+      "stateCode": "KY",
+      "name": "Andy Beshear",
+      "since": "2019-12-10"
+    },
+    {
+      "stateCode": "LA",
+      "name": "Jeff Landry",
+      "since": "2024-01-08"
+    },
+    {
+      "stateCode": "MA",
+      "name": "Maura Healey",
+      "since": "2023-01-05"
+    },
+    {
+      "stateCode": "MD",
+      "name": "Wes Moore",
+      "since": "2023-01-18"
+    },
+    {
+      "stateCode": "ME",
+      "name": "Janet T. Mills",
+      "since": "2019-01-02"
+    },
+    {
+      "stateCode": "MI",
+      "name": "Gretchen Whitmer",
+      "since": "2019-01-01"
+    },
+    {
+      "stateCode": "MN",
+      "name": "Tim Walz",
+      "since": "2019-01-07"
+    },
+    {
+      "stateCode": "MO",
+      "name": "Mike Kehoe",
+      "since": "2025-01-13"
+    },
+    {
+      "stateCode": "MS",
+      "name": "Tate Reeves",
+      "since": "2020-01-14"
+    },
+    {
+      "stateCode": "MT",
+      "name": "Greg Gianforte",
+      "since": "2021-01-04"
+    },
+    {
+      "stateCode": "NC",
+      "name": "Josh Stein",
+      "since": "2025-01-01"
+    },
+    {
+      "stateCode": "ND",
+      "name": "Doug Burgum",
+      "since": "2016-12-15"
+    },
+    {
+      "stateCode": "NE",
+      "name": "Jim Pillen",
+      "since": "2023-01-05"
+    },
+    {
+      "stateCode": "NH",
+      "name": "Chris Sununu",
+      "since": "2017-01-05"
+    },
+    {
+      "stateCode": "NJ",
+      "name": "Mikie Sherrill",
+      "since": "2026-01-20"
+    },
+    {
+      "stateCode": "NM",
+      "name": "Michelle Lujan Grisham",
+      "since": "2019-01-01"
+    },
+    {
+      "stateCode": "NV",
+      "name": "Joe Lombardo",
+      "since": "2023-01-02"
+    },
+    {
+      "stateCode": "NY",
+      "name": "Kathy Hochul",
+      "since": "2021-08-24"
+    },
+    {
+      "stateCode": "OH",
+      "name": "Mike DeWine",
+      "since": "2019-01-14"
+    },
+    {
+      "stateCode": "OK",
+      "name": "Kevin Stitt",
+      "since": "2019-01-14"
+    },
+    {
+      "stateCode": "OR",
+      "name": "Tina Kotek",
+      "since": "2023-01-09"
+    },
+    {
+      "stateCode": "PA",
+      "name": "Josh Shapiro",
+      "since": "2023-01-17"
+    },
+    {
+      "stateCode": "RI",
+      "name": "Daniel McKee",
+      "since": "2021-03-02"
+    },
+    {
+      "stateCode": "SC",
+      "name": "Henry McMaster",
+      "since": "2017-01-24"
+    },
+    {
+      "stateCode": "SD",
+      "name": "Larry Rhoden",
+      "since": "2025-01-05"
+    },
+    {
+      "stateCode": "TN",
+      "name": "Bill Lee",
+      "since": "2019-01-19"
+    },
+    {
+      "stateCode": "TX",
+      "name": "Greg Abbott",
+      "since": "2015-01-20"
+    },
+    {
+      "stateCode": "UT",
+      "name": "Spencer Cox",
+      "since": "2021-01-04"
+    },
+    {
+      "stateCode": "VA",
+      "name": "Abigail Spanberger",
+      "since": "2026-01-17"
+    },
+    {
+      "stateCode": "VT",
+      "name": "Phil Scott",
+      "since": "2017-01-06"
+    },
+    {
+      "stateCode": "WA",
+      "name": "Bob Ferguson",
+      "since": "2025-01-15"
+    },
+    {
+      "stateCode": "WI",
+      "name": "Tony Evers",
+      "since": "2019-01-07"
+    },
+    {
+      "stateCode": "WV",
+      "name": "Patrick Morrisey",
+      "since": "2025-01-01"
+    },
+    {
+      "stateCode": "WY",
+      "name": "Mark Gordon",
+      "since": "2019-01-07"
+    }
+  ]
+}

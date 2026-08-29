@@ -23,3 +23,18 @@ public sealed class SeedState
     [JsonPropertyName("name")] public string Name { get; set; } = "";
     [JsonPropertyName("capital")] public string Capital { get; set; } = "";
 }
+
+/// <summary>Shape of the generated governors.json.</summary>
+public sealed class SeedGovernorFile
+{
+    [JsonPropertyName("asOf")] public string AsOf { get; set; } = "";
+    [JsonPropertyName("source")] public string? Source { get; set; }
+    [JsonPropertyName("governors")] public List<SeedGovernor> Governors { get; set; } = [];
+}
+
+public sealed class SeedGovernor
+{
+    [JsonPropertyName("stateCode")] public string StateCode { get; set; } = "";
+    [JsonPropertyName("name")] public string Name { get; set; } = "";
+    [JsonPropertyName("since")] public string? Since { get; set; }
+}

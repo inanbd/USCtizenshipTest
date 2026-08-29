@@ -41,6 +41,7 @@ public class SeedDataTests : IAsyncLifetime
     [Theory]
     [InlineData(TestVersion.V2008, 100)]
     [InlineData(TestVersion.V2020, 128)]
+    [InlineData(TestVersion.V2025, 128)]
     public async Task Seeds_the_right_number_of_questions(TestVersion version, int expected)
     {
         var count = await _db.Questions.CountAsync(q => q.Version == version);
@@ -50,6 +51,7 @@ public class SeedDataTests : IAsyncLifetime
     [Theory]
     [InlineData(TestVersion.V2008, 100)]
     [InlineData(TestVersion.V2020, 128)]
+    [InlineData(TestVersion.V2025, 128)]
     public async Task Question_numbers_are_contiguous_from_one(TestVersion version, int expected)
     {
         var numbers = await _db.Questions.Where(q => q.Version == version)
@@ -61,6 +63,7 @@ public class SeedDataTests : IAsyncLifetime
     [Theory]
     [InlineData(TestVersion.V2008)]
     [InlineData(TestVersion.V2020)]
+    [InlineData(TestVersion.V2025)]
     public async Task Each_version_marks_exactly_twenty_65_20_questions(TestVersion version)
     {
         var count = await _db.Questions.CountAsync(q => q.Version == version && q.Senior);
@@ -83,6 +86,13 @@ public class SeedDataTests : IAsyncLifetime
                     || q.Kind == AnswerKind.StateSenator || q.Kind == AnswerKind.StateRepresentative))
             .Select(q => q.Number).OrderBy(n => n).ToListAsync();
         Assert.Equal([23, 29, 61, 62], v2020);
+
+        var v2025 = await _db.Questions
+            .Where(q => q.Version == TestVersion.V2025
+                && (q.Kind == AnswerKind.StateCapital || q.Kind == AnswerKind.Governor
+                    || q.Kind == AnswerKind.StateSenator || q.Kind == AnswerKind.StateRepresentative))
+            .Select(q => q.Number).OrderBy(n => n).ToListAsync();
+        Assert.Equal([23, 29, 61, 62], v2025);
     }
 
     [Fact]
@@ -103,6 +113,14 @@ public class SeedDataTests : IAsyncLifetime
                     || q.Kind == AnswerKind.PresidentParty))
             .Select(q => q.Number).OrderBy(n => n).ToListAsync();
         Assert.Equal([30, 38, 39, 57], v2020);
+
+        var v2025 = await _db.Questions
+            .Where(q => q.Version == TestVersion.V2025
+                && (q.Kind == AnswerKind.President || q.Kind == AnswerKind.VicePresident
+                    || q.Kind == AnswerKind.Speaker || q.Kind == AnswerKind.ChiefJustice
+                    || q.Kind == AnswerKind.PresidentParty))
+            .Select(q => q.Number).OrderBy(n => n).ToListAsync();
+        Assert.Equal([30, 38, 39, 57], v2025);
     }
 
     [Fact]
@@ -110,7 +128,7 @@ public class SeedDataTests : IAsyncLifetime
     {
         var questions = await _db.Questions.Include(q => q.Answers).ToListAsync();
 
-        Assert.Equal(228, questions.Count);
+        Assert.Equal(356, questions.Count);
         Assert.All(questions, q =>
         {
             Assert.False(string.IsNullOrWhiteSpace(q.Prompt));
@@ -139,6 +157,55 @@ public class SeedDataTests : IAsyncLifetime
         Assert.All(dynamicQuestions, q => Assert.False(string.IsNullOrWhiteSpace(q.Note)));
     }
 
+    /// <summary>
+    /// The 2025 set is the 2020 set with eight documented changes from M-1778 (09/25). These pin
+    /// the ones that would otherwise silently revert if the export were regenerated from stale
+    /// Dart data.
+    /// </summary>
+    [Fact]
+    public async Task Seeds_the_2025_specific_answer_changes()
+    {
+        var q48 = await _db.Questions.Include(q => q.Answers)
+            .SingleAsync(q => q.Version == TestVersion.V2025 && q.Number == 48);
+        Assert.Contains(q48.Answers, a => a.Text == "Secretary of War (Defense)");
+        Assert.DoesNotContain(q48.Answers, a => a.Text == "Secretary of Defense");
+
+        var q126 = await _db.Questions.Include(q => q.Answers)
+            .SingleAsync(q => q.Version == TestVersion.V2025 && q.Number == 126);
+        Assert.Contains(q126.Answers, a => a.Text == "Juneteenth");
+
+        var q118 = await _db.Questions.Include(q => q.Answers)
+            .SingleAsync(q => q.Version == TestVersion.V2025 && q.Number == 118);
+        Assert.Contains(q118.Answers, a => a.Text.Contains("internal combustion engine"));
+
+        var q97 = await _db.Questions
+            .SingleAsync(q => q.Version == TestVersion.V2025 && q.Number == 97);
+        Assert.Contains("subject to the jurisdiction thereof", q97.Prompt);
+
+        // The 2020 set keeps the old wording - the two are genuinely different sets.
+        var q126Old = await _db.Questions.Include(q => q.Answers)
+            .SingleAsync(q => q.Version == TestVersion.V2020 && q.Number == 126);
+        Assert.DoesNotContain(q126Old.Answers, a => a.Text == "Juneteenth");
+    }
+
+    [Fact]
+    public async Task Seeds_a_governor_for_every_state_but_not_dc()
+    {
+        var governors = await _db.Governors.ToListAsync();
+
+        Assert.Equal(50, governors.Count);
+        Assert.DoesNotContain(governors, g => g.StateCode == "DC");
+        Assert.All(governors, g =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(g.Name));
+            Assert.NotEqual(default, g.AsOf);
+        });
+
+        // Every governor must belong to a state we actually seed.
+        var codes = await _db.States.Select(s => s.Code).ToListAsync();
+        Assert.All(governors, g => Assert.Contains(g.StateCode, codes));
+    }
+
     [Fact]
     public async Task Seeds_all_fifty_states_plus_dc_with_correct_capitals()
     {
@@ -156,8 +223,9 @@ public class SeedDataTests : IAsyncLifetime
     {
         await new DatabaseSeeder(_db, NullLogger<DatabaseSeeder>.Instance).SeedAsync();
 
-        Assert.Equal(228, await _db.Questions.CountAsync());
+        Assert.Equal(356, await _db.Questions.CountAsync());
         Assert.Equal(51, await _db.States.CountAsync());
+        Assert.Equal(50, await _db.Governors.CountAsync());
         // Answers are replaced, not appended.
         Assert.Equal(1, await _db.Questions
             .Where(q => q.Version == TestVersion.V2008 && q.Number == 1)

@@ -80,7 +80,8 @@ public class StartTestCommandHandler(
         for (var i = 0; i < selected.Count; i++)
         {
             var q = selected[i];
-            var accepted = AnswerResolver.Resolve(q, context.Profile, context.State, context.Officials);
+            var accepted = AnswerResolver.Resolve(
+                q, context.Profile, context.State, context.Officials, context.SeededGovernor);
 
             session.Questions.Add(new TestSessionQuestion
             {

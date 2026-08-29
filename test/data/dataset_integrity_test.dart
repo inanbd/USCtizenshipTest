@@ -1,6 +1,7 @@
 import 'package:citizenship_test/data/question_repository.dart';
 import 'package:citizenship_test/data/state_data.dart';
 import 'package:citizenship_test/models/enums.dart';
+import 'package:citizenship_test/models/question.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Pins the datasets to the official USCIS structure. These are the facts a
@@ -172,7 +173,132 @@ void main() {
     });
   });
 
-  group('both versions', () {
+  group('2025 test (128 questions) — the current exam', () {
+    final questions = QuestionRepository.forVersion(TestVersion.v2025);
+
+    test('has exactly 128 questions numbered 1-128', () {
+      expect(questions.length, 128);
+      expect(
+        questions.map((q) => q.id).toList(),
+        List.generate(128, (i) => i + 1),
+      );
+    });
+
+    test('marks exactly the official 65/20 questions', () {
+      final marked = questions.where((q) => q.senior).map((q) => q.id).toSet();
+      expect(marked, senior2020);
+      expect(marked.length, 20);
+    });
+
+    test('flags exactly the state-dependent questions', () {
+      final flagged = questions
+          .where((q) => q.isStateDependent)
+          .map((q) => q.id)
+          .toSet();
+      expect(flagged, stateDependent2020);
+    });
+
+    test('flags exactly the time-sensitive questions', () {
+      final flagged = questions
+          .where((q) => q.isTimeSensitive)
+          .map((q) => q.id)
+          .toSet();
+      expect(flagged, timeSensitive2020);
+    });
+
+    test('requires the right number of answers on multi-answer questions', () {
+      // The 2025 revision changed wording and added answers, never how many a
+      // candidate has to give.
+      for (final q in questions) {
+        expect(
+          q.requiredCount,
+          multi2020[q.id] ?? 1,
+          reason: 'Q${q.id}: "${q.prompt}"',
+        );
+      }
+    });
+
+    test('asks 20 questions and passes at 12', () {
+      expect(TestVersion.v2025.askedCount, 20);
+      expect(TestVersion.v2025.passCount, 12);
+    });
+
+    test('is the version the app treats as current', () {
+      expect(TestVersion.v2025.isCurrent, isTrue);
+      expect(TestVersion.v2008.isCurrent, isFalse);
+      expect(TestVersion.v2020.isCurrent, isFalse);
+    });
+
+    /// The eight documented differences from the 2020 set, per USCIS M-1778
+    /// (09/25). If a regeneration ever flattened the 2025 file back onto the
+    /// 2020 one, these are what would silently disappear.
+    group('the changes M-1778 (09/25) made to the 2020 set', () {
+      Question q(int id) => QuestionRepository.byId(TestVersion.v2025, id)!;
+      Question old(int id) => QuestionRepository.byId(TestVersion.v2020, id)!;
+
+      test('Q31 also accepts "People of their state"', () {
+        expect(q(31).answers, contains('People of their state'));
+        expect(old(31).answers, isNot(contains('People of their state')));
+      });
+
+      test('Q33 also accepts answers phrased by district', () {
+        expect(
+          q(33).answers,
+          contains('People from their (congressional) district'),
+        );
+      });
+
+      test('Q41 adds appointing federal judges', () {
+        expect(q(41).answers, contains('Appoints federal judges'));
+      });
+
+      test('Q48 renames the Defense post and adds six more officials', () {
+        expect(q(48).answers, contains('Secretary of War (Defense)'));
+        expect(q(48).answers, isNot(contains('Secretary of Defense')));
+        expect(q(48).answers, contains('Vice-President'));
+        for (final added in [
+          'Administrator of the Environmental Protection Agency',
+          'Director of the Central Intelligence Agency',
+          'Director of National Intelligence',
+        ]) {
+          expect(
+            q(48).answers.any((a) => a.contains(added.split(' of ').last)),
+            isTrue,
+            reason: 'Q48 should list $added',
+          );
+        }
+        expect(q(48).answers.length, greaterThan(old(48).answers.length));
+      });
+
+      test('Q68 rewrites how someone becomes a citizen', () {
+        expect(q(68).answers.any((a) => a.contains('14th Amendment')), isTrue);
+        expect(q(68).answers, contains('Naturalize'));
+      });
+
+      test('Q97 quotes the 14th Amendment in full', () {
+        expect(q(97).prompt, contains('subject to the jurisdiction thereof'));
+        expect(old(97).prompt, isNot(contains('subject to the jurisdiction')));
+      });
+
+      test('Q118 says internal combustion engine', () {
+        expect(
+          q(118).answers.any((a) => a.contains('internal combustion engine')),
+          isTrue,
+        );
+        expect(
+          q(118).answers.any((a) => a.contains('combustible engine')),
+          isFalse,
+        );
+      });
+
+      test('Q126 adds Juneteenth to the national holidays', () {
+        expect(q(126).answers, contains('Juneteenth'));
+        expect(old(126).answers, isNot(contains('Juneteenth')));
+      });
+    });
+  });
+
+  group('every version', () {
     for (final version in TestVersion.values) {
       final questions = QuestionRepository.forVersion(version);
 
@@ -244,8 +370,8 @@ void main() {
 
     test('keys do not collide across versions', () {
       final all = [
-        ...QuestionRepository.forVersion(TestVersion.v2008),
-        ...QuestionRepository.forVersion(TestVersion.v2020),
+        for (final version in TestVersion.values)
+          ...QuestionRepository.forVersion(version),
       ];
       expect(all.map((q) => q.key).toSet().length, all.length);
     });

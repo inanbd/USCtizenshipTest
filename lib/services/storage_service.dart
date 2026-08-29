@@ -69,6 +69,10 @@ class StorageKeys {
 
   static const stateInfo = 'state.info';
 
+  /// One cache entry per state, so switching states does not lose the old one.
+  static String stateAnswers(String stateCode) =>
+      'state.answers.${stateCode.toUpperCase()}';
+
   static String learned(String versionKey) => 'progress.learned.$versionKey';
   static String favorites(String versionKey) =>
       'progress.favorites.$versionKey';

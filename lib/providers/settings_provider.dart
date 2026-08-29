@@ -14,7 +14,8 @@ class SettingsProvider extends ChangeNotifier {
 
   final StorageService _storage;
 
-  TestVersion _testVersion = TestVersion.v2008;
+  // The 2025 test is the one administered today, so it is the default.
+  TestVersion _testVersion = TestVersion.v2025;
   ThemeMode _themeMode = ThemeMode.system;
   double _ttsRate = 0.45;
   bool _seniorOnly = false;
@@ -32,7 +33,11 @@ class SettingsProvider extends ChangeNotifier {
 
   void _load() {
     final v = _storage.getString(StorageKeys.testVersion);
-    _testVersion = v == 'v2020' ? TestVersion.v2020 : TestVersion.v2008;
+    _testVersion = switch (v) {
+      'v2008' => TestVersion.v2008,
+      'v2020' => TestVersion.v2020,
+      _ => TestVersion.v2025,
+    };
 
     final theme = _storage.getString(StorageKeys.darkMode);
     _themeMode = switch (theme) {

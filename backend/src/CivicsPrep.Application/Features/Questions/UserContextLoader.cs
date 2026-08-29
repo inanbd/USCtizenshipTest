@@ -15,9 +15,10 @@ public sealed record UserContext(
     UsState? State,
     CurrentOfficials Officials,
     IReadOnlySet<int> Learned,
-    IReadOnlySet<int> Favorites)
+    IReadOnlySet<int> Favorites,
+    string? SeededGovernor = null)
 {
-    public TestVersion PreferredVersion => Profile?.TestVersion ?? TestVersion.V2008;
+    public TestVersion PreferredVersion => Profile?.TestVersion ?? TestVersionExtensions.Current;
 }
 
 /// <summary>Loads <see cref="UserContext"/> for the signed-in user (or an anonymous default).</summary>
@@ -39,12 +40,17 @@ public class UserContextLoader(
         var profile = await db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId, ct);
 
         UsState? state = null;
+        string? seededGovernor = null;
         if (!string.IsNullOrWhiteSpace(profile?.StateCode))
         {
             state = await db.States.FirstOrDefaultAsync(s => s.Code == profile!.StateCode, ct);
+            seededGovernor = await db.Governors
+                .Where(g => g.StateCode == profile!.StateCode)
+                .Select(g => g.Name)
+                .FirstOrDefaultAsync(ct);
         }
 
-        var effectiveVersion = version ?? profile?.TestVersion ?? TestVersion.V2008;
+        var effectiveVersion = version ?? profile?.TestVersion ?? TestVersionExtensions.Current;
 
         var progress = await db.UserQuestionProgress
             .Where(p => p.UserId == userId && p.Version == effectiveVersion)
@@ -54,7 +60,7 @@ public class UserContextLoader(
         var favorites = progress.Where(p => p.IsFavorite).Select(p => p.QuestionNumber).ToHashSet();
 
         return new UserContext(
-            profile, state, ResolveOfficials(profile), learned, favorites);
+            profile, state, ResolveOfficials(profile), learned, favorites, seededGovernor);
     }
 
     private CurrentOfficials ResolveOfficials(UserProfile? profile)

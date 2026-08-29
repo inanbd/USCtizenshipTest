@@ -77,26 +77,48 @@ else
                 </div>
 
                 <div class="row" style="margin-top:.5rem">
-                    <button class="btn btn-ghost btn-sm" @onclick="LookupAsync" disabled="@_busy">
-                        Look up from Congress.gov
+                    <button class="btn btn-ghost btn-sm" @onclick="FetchAnswersAsync" disabled="@_busy">
+                        Fetch my state answers
                     </button>
                 </div>
 
-                @if (_congress.Count > 0)
+                @if (_answers is { } fetched)
                 {
-                    <ul class="q-list" style="margin-top:.5rem">
-                        @foreach (var m in _congress)
-                        {
-                            <li>
-                                <div style="flex:1">
-                                    <strong>@m.Name</strong>
-                                    <span class="muted small">
-                                        @m.Chamber @(m.District is null ? "" : $"· District {m.District}")
-                                    </span>
-                                </div>
-                            </li>
-                        }
-                    </ul>
+                    @if (fetched.Governor is { } gov)
+                    {
+                        <p class="muted small" style="margin:.4rem 0 0">
+                            Governor on file: <strong>@gov.Name</strong>
+                            (verified @gov.AsOf.ToString("yyyy-MM-dd"))
+                        </p>
+                    }
+                    @if (fetched.CongressNotice is { Length: > 0 } notice)
+                    {
+                        <p class="muted small" style="margin:.4rem 0 0">@notice</p>
+                    }
+                    @if (fetched.Representatives.Count > 0)
+                    {
+                        <p class="muted small" style="margin:.6rem 0 .2rem">
+                            Pick the representative for your congressional district:
+                        </p>
+                        <ul class="q-list">
+                            @foreach (var m in fetched.Representatives)
+                            {
+                                <li>
+                                    <div style="flex:1">
+                                        <strong>@m.Name</strong>
+                                        <span class="muted small">
+                                            @(m.District is null ? "" : $"District {m.District}")
+                                            @(m.Party is null ? "" : $"· {m.Party}")
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-ghost btn-sm"
+                                            @onclick="() => _representative = m.Name">
+                                        This is mine
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
                 }
             }
         }
@@ -151,7 +173,7 @@ else
 
 @code {
     private IReadOnlyList<StateDto> _states = [];
-    private List<CongressMemberDto> _congress = [];
+    private StateAnswersDto? _answers;
     private string? _error;
     private string? _saved;
     private bool _loading = true;
@@ -224,12 +246,32 @@ else
         _saved = "Progress reset.";
     });
 
-    private async Task LookupAsync() => await Guarded(async () =>
+    /// <summary>
+    /// Fills in whatever the user has not typed themselves. A name already in a box is theirs
+    /// and is left alone; the representative is never auto-filled, since only they know their
+    /// congressional district.
+    /// </summary>
+    private async Task FetchAnswersAsync() => await Guarded(async () =>
     {
-        _congress = [.. await Api.LookupCongressAsync(_stateCode)];
-        _saved = _congress.Count == 0
-            ? "No members returned."
-            : "Pick your representative from the list and copy the name in.";
+        var answers = await Api.GetStateAnswersAsync(_stateCode);
+        _answers = answers;
+
+        if (string.IsNullOrWhiteSpace(_governor) && answers.Governor is { } gov)
+        {
+            _governor = gov.Name;
+        }
+
+        if (answers.Senators.Count > 0
+            && string.IsNullOrWhiteSpace(_senatorOne)
+            && string.IsNullOrWhiteSpace(_senatorTwo))
+        {
+            _senatorOne = answers.Senators[0].Name;
+            _senatorTwo = answers.Senators.Count > 1 ? answers.Senators[1].Name : "";
+        }
+
+        _saved = answers.Representatives.Count > 0
+            ? "Pick your representative from the list, then save."
+            : "Fetched what the server has. Fill in the rest by hand.";
     });
 
     /// <summary>Runs an action, surfacing whatever the API said instead of throwing at the user.</summary>

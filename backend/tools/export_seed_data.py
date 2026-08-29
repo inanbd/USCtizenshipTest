@@ -34,6 +34,11 @@ def join_adjacent(raw: str) -> str:
 
 def parse_questions(path: Path, version: str):
     text = path.read_text()
+    # Drop comment-only lines; the datasets annotate individual revisions with
+    # them and they would otherwise break the field-matching below.
+    text = "\n".join(
+        ln for ln in text.split("\n") if not re.match(r"^\s*//", ln)
+    )
     body = text[text.index("= ["):]
     blocks = re.findall(r"Question\((.*?)\n  \),", body, re.S)
     out = []
@@ -88,12 +93,14 @@ def main():
 
     q2008 = parse_questions(root / "lib/data/questions_2008.dart", "V2008")
     q2020 = parse_questions(root / "lib/data/questions_2020.dart", "V2020")
+    q2025 = parse_questions(root / "lib/data/questions_2025.dart", "V2025")
     states = parse_states(root / "lib/data/state_data.dart")
 
     assert len(q2008) == 100, f"expected 100 questions for 2008, got {len(q2008)}"
     assert len(q2020) == 128, f"expected 128 questions for 2020, got {len(q2020)}"
+    assert len(q2025) == 128, f"expected 128 questions for 2025, got {len(q2025)}"
     assert len(states) == 51, f"expected 51 states, got {len(states)}"
-    for qs, name in ((q2008, "2008"), (q2020, "2020")):
+    for qs, name in ((q2008, "2008"), (q2020, "2020"), (q2025, "2025")):
         seniors = [q for q in qs if q["senior"]]
         assert len(seniors) == 20, f"{name}: expected 20 senior questions, got {len(seniors)}"
         for q in qs:
@@ -102,11 +109,20 @@ def main():
             if q["kind"] != "fixed":
                 assert q["note"], f"{name} Q{q['id']} is dynamic but has no guidance note"
 
+    # Spot-check the 2025 revisions so a bad regeneration cannot pass silently.
+    by_number = {q["id"]: q for q in q2025}
+    assert "Juneteenth" in by_number[126]["answers"], "2025 Q126 is missing Juneteenth"
+    assert any("Secretary of War" in a for a in by_number[48]["answers"]), \
+        "2025 Q48 is missing Secretary of War (Defense)"
+    assert "born or naturalized" in by_number[97]["prompt"], \
+        "2025 Q97 is not the revised wording"
+
     (outdir / "questions.json").write_text(
-        json.dumps(q2008 + q2020, indent=2, ensure_ascii=False) + "\n")
+        json.dumps(q2008 + q2020 + q2025, indent=2, ensure_ascii=False) + "\n")
     (outdir / "states.json").write_text(
         json.dumps(states, indent=2, ensure_ascii=False) + "\n")
-    print(f"wrote {len(q2008) + len(q2020)} questions and {len(states)} states to {outdir}")
+    print(f"wrote {len(q2008) + len(q2020) + len(q2025)} questions "
+          f"and {len(states)} states to {outdir}")
 
 
 if __name__ == "__main__":

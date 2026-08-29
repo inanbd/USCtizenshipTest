@@ -120,6 +120,10 @@ public class CivicsApiClient(HttpClient http)
     public Task<IReadOnlyList<CongressMemberDto>> LookupCongressAsync(string stateCode) =>
         GetAsync<IReadOnlyList<CongressMemberDto>>($"api/states/{stateCode}/congress");
 
+    /// <summary>Capital, governor, senators and the state's House delegation in one call.</summary>
+    public Task<StateAnswersDto> GetStateAnswersAsync(string stateCode) =>
+        GetAsync<StateAnswersDto>($"api/states/{stateCode}/answers");
+
     public Task<OfficialsDto> GetOfficialsAsync() => GetAsync<OfficialsDto>("api/settings/officials");
 
     public Task<OfficialsDto> UpdateOfficialsAsync(UpdateOfficialsRequest request) =>

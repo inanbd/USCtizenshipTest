@@ -30,6 +30,6 @@ public class GetQuestionQueryHandler(IApplicationDbContext db, UserContextLoader
 
         return QuestionProjection.ToDto(
             question, context.Profile, context.State, context.Officials,
-            context.Learned, context.Favorites);
+            context.Learned, context.Favorites, context.SeededGovernor);
     }
 }

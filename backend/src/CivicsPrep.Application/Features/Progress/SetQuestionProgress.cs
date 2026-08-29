@@ -39,7 +39,7 @@ public class SetQuestionProgressCommandHandler(
 
         var profile = await db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId, ct);
         var version = request.Version?.ToDomain() ?? profile?.TestVersion
-            ?? Domain.Enums.TestVersion.V2008;
+            ?? TestVersionExtensions.Current;
 
         var exists = await db.Questions
             .AnyAsync(q => q.Version == version && q.Number == request.Number, ct);

@@ -4,6 +4,7 @@ import '../models/question.dart';
 import '../models/state_info.dart';
 import 'questions_2008.dart';
 import 'questions_2020.dart';
+import 'questions_2025.dart';
 
 /// Central access point for the question sets and for resolving the answers
 /// that depend on the user's state or on current officeholders.
@@ -13,6 +14,7 @@ class QuestionRepository {
   static List<Question> forVersion(TestVersion version) => switch (version) {
     TestVersion.v2008 => kQuestions2008,
     TestVersion.v2020 => kQuestions2020,
+    TestVersion.v2025 => kQuestions2025,
   };
 
   static Question? byId(TestVersion version, int id) {

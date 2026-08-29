@@ -12,6 +12,7 @@ public interface IApplicationDbContext
     DbSet<Question> Questions { get; }
     DbSet<QuestionAnswer> QuestionAnswers { get; }
     DbSet<UsState> States { get; }
+    DbSet<Governor> Governors { get; }
     DbSet<UserProfile> UserProfiles { get; }
     DbSet<UserQuestionProgress> UserQuestionProgress { get; }
     DbSet<TestSession> TestSessions { get; }

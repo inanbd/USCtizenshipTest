@@ -16,9 +16,12 @@ class ApiConfig {
     defaultValue: 'https://api.civicsprep.example',
   );
 
+  /// True when [url] points at a real backend rather than the placeholder.
+  static bool isRealBaseUrl(String url) =>
+      url.isNotEmpty && !url.contains('example');
+
   /// True when a real backend has been configured for this build.
-  static bool get isConfigured =>
-      baseUrl.isNotEmpty && !baseUrl.contains('example');
+  static bool get isConfigured => isRealBaseUrl(baseUrl);
 
   static const Duration timeout = Duration(seconds: 20);
 }

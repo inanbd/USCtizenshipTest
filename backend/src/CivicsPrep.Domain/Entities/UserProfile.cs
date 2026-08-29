@@ -12,7 +12,8 @@ public class UserProfile
 
     public string UserId { get; set; } = string.Empty;
 
-    public TestVersion TestVersion { get; set; } = TestVersion.V2008;
+    // New accounts study the test that is actually administered today.
+    public TestVersion TestVersion { get; set; } = TestVersion.V2025;
 
     /// <summary>Two-letter state code, or null when the user has not set it yet.</summary>
     public string? StateCode { get; set; }

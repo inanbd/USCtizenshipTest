@@ -44,7 +44,7 @@ public class GetQuestionsQueryHandler(IApplicationDbContext db, UserContextLoade
         var dtos = questions
             .Select(q => QuestionProjection.ToDto(
                 q, context.Profile, context.State, context.Officials,
-                context.Learned, context.Favorites))
+                context.Learned, context.Favorites, context.SeededGovernor))
             .Where(dto => MatchesFilter(dto, request.Filter))
             .Where(dto => MatchesSearch(dto, request.Search))
             .ToList();

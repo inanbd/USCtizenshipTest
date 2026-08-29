@@ -41,6 +41,82 @@ public class SettingsAndStateEndpointTests(CivicsPrepApiFactory factory)
     }
 
     [Fact]
+    public async Task Resolves_every_state_answer_in_one_public_call()
+    {
+        // No sign-in: the app must be able to refresh its state answers without an account.
+        var answers = await NewClient().GetAsync<StateAnswersDto>("/api/states/NV/answers");
+
+        Assert.Equal("NV", answers.StateCode);
+        Assert.Equal("Nevada", answers.StateName);
+        Assert.Equal("Carson City", answers.Capital);
+        Assert.False(answers.IsDistrictOfColumbia);
+
+        Assert.NotNull(answers.Governor);
+        Assert.False(string.IsNullOrWhiteSpace(answers.Governor!.Name));
+        Assert.NotEqual(default, answers.Governor.AsOf);
+
+        // No Congress.gov key is configured for the tests, so the live half degrades to a
+        // notice instead of failing the whole call.
+        Assert.False(answers.CongressAvailable);
+        Assert.False(string.IsNullOrWhiteSpace(answers.CongressNotice));
+        Assert.Empty(answers.Senators);
+        Assert.Empty(answers.Representatives);
+    }
+
+    [Fact]
+    public async Task State_answers_accept_a_lowercase_code()
+    {
+        var answers = await NewClient().GetAsync<StateAnswersDto>("/api/states/ca/answers");
+
+        Assert.Equal("CA", answers.StateCode);
+        Assert.Equal("Sacramento", answers.Capital);
+    }
+
+    [Fact]
+    public async Task State_answers_for_dc_say_there_is_nothing_to_look_up()
+    {
+        var answers = await NewClient().GetAsync<StateAnswersDto>("/api/states/DC/answers");
+
+        Assert.True(answers.IsDistrictOfColumbia);
+        Assert.Null(answers.Governor);
+        Assert.Empty(answers.Senators);
+        Assert.Contains("no Governor", answers.CongressNotice);
+    }
+
+    [Fact]
+    public async Task State_answers_reject_an_unknown_state()
+    {
+        var response = await factory.CreateClient().GetAsync("/api/states/ZZ/answers");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    /// <summary>
+    /// The maintained governors table means a user who only picks their state still gets Q43
+    /// graded, and a name they type themselves still wins over it.
+    /// </summary>
+    [Fact]
+    public async Task Seeded_governor_answers_the_governor_question_until_the_user_overrides_it()
+    {
+        var client = NewClient();
+        await client.RegisterAndSignInAsync();
+        await client.PutAsync("/api/states/me",
+            new UpdateStateInfoRequest("NV", null, null, null, null));
+
+        var seeded = await client.GetAsync<StateAnswersDto>("/api/states/NV/answers");
+        var question = await client.GetAsync<QuestionDto>("/api/questions/43?version=V2008");
+
+        Assert.False(question.NeedsUserData);
+        Assert.Equal([seeded.Governor!.Name], question.Answers);
+
+        await client.PutAsync("/api/states/me",
+            new UpdateStateInfoRequest("NV", "Someone Else", null, null, null));
+
+        var overridden = await client.GetAsync<QuestionDto>("/api/questions/43?version=V2008");
+        Assert.Equal(["Someone Else"], overridden.Answers);
+    }
+
+    [Fact]
     public async Task An_unknown_state_code_is_rejected()
     {
         var client = NewClient();

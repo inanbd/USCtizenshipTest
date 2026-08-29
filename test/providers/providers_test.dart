@@ -22,9 +22,9 @@ void main() {
       storage = await freshStorage();
     });
 
-    test('starts on the 2008 test with system theme', () {
-      final settings = SettingsProvider(storage);
-      expect(settings.testVersion, TestVersion.v2008);
+    test('starts on the 2025 test — the one administered today', () async {
+      final settings = SettingsProvider(await emptyStorage());
+      expect(settings.testVersion, TestVersion.v2025);
       expect(settings.themeMode, ThemeMode.system);
       expect(settings.stateInfo, isNull);
       expect(settings.seniorOnly, isFalse);

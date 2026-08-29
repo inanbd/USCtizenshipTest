@@ -1,3 +1,4 @@
+using CivicsPrep.Domain.Enums;
 using CivicsPrep.Application.Common.Interfaces;
 using CivicsPrep.Application.Mapping;
 using CivicsPrep.Contracts.Common;
@@ -17,7 +18,7 @@ public class ResetProgressCommandHandler(IApplicationDbContext db, ICurrentUser 
         var userId = currentUser.RequireUserId();
         var profile = await db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId, ct);
         var version = request.Version?.ToDomain() ?? profile?.TestVersion
-            ?? Domain.Enums.TestVersion.V2008;
+            ?? TestVersionExtensions.Current;
 
         var rows = await db.UserQuestionProgress
             .Where(p => p.UserId == userId && p.Version == version && p.IsLearned)

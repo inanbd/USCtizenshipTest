@@ -78,6 +78,10 @@ dotnet run --project src/CivicsPrep.Web
 
 Set the API address in `src/CivicsPrep.Web/wwwroot/appsettings.json`.
 
+**Settings › My state** offers the same one-call fetch the app uses: it fills in
+the governor and senators you have not typed yourself, and lists the state's
+House members so you can click the one for your district.
+
 ## Configuration
 
 | Setting | Purpose |
@@ -113,8 +117,33 @@ readable anonymously; everything user-specific needs a bearer token.
 | `GET` | `/api/tests/{id}` · `/{id}/result` | Resume · review |
 | `GET`/`POST`/`PUT`/`DELETE` | `/api/study-plan` | The user's study plan |
 | `GET` | `/api/states` · `/api/states/{code}/congress` | States · live Congress lookup |
+| `GET` | `/api/states/{code}/answers` | Every state answer at once: capital, governor, senators, House delegation |
 | `GET`/`PUT` | `/api/states/me` | The user's state info |
 | `GET`/`PUT` | `/api/settings` · `/settings/officials` | Test version · current officials |
+
+### State answers in one call
+
+`GET /api/states/{code}/answers` is what the app calls to fill in the
+state-dependent questions. It returns:
+
+- the **capital**, from the seeded state list;
+- the **governor**, from the maintained `Governors` table, with the `asOf` date
+  the table was last verified;
+- the state's **senators** and its **full House delegation** with district
+  numbers, from Congress.gov.
+
+The House list is deliberately complete — only the applicant knows their
+congressional district, so the client has them pick. The endpoint is anonymous:
+state answers are not personal, and the app must work before anyone signs in.
+
+If `Congress:ApiKey` is unset or Congress.gov is unreachable, the call still
+succeeds with `congressAvailable: false` and a `congressNotice` explaining why;
+the capital and governor come back regardless. D.C. returns no governor and no
+members, which is the official answer for D.C. residents.
+
+The seeded governor also answers the "who is the governor of your state" civics
+question for a user who has only picked their state. A name they enter
+themselves always wins over the table.
 
 ### Grading is the server's job
 
@@ -134,9 +163,22 @@ content. Regenerate after editing the app's datasets:
 python3 backend/tools/export_seed_data.py . backend/src/CivicsPrep.Infrastructure/SeedData
 ```
 
-The exporter asserts the official structure (100 and 128 questions, 20 starred
-questions each, a guidance note on every dynamic question) and fails rather than
-writing bad data.
+The exporter asserts the official structure (100, 128 and 128 questions, 20
+starred questions each, a guidance note on every dynamic question) and fails
+rather than writing bad data.
+
+### Governors
+
+`src/CivicsPrep.Infrastructure/SeedData/governors.json` is **maintained by
+hand** — it is the one dataset with no upstream file to generate from. It holds
+50 rows (no D.C.) with an `asOf` date for the whole file, and is seeded
+idempotently into the `Governors` table: editing a name and redeploying updates
+the row. Because it lives on the server, a governor who changes mid-election
+cycle is a data fix, not an app release.
+
+Governors change with elections; verify at
+[uscis.gov/citizenship/testupdates](https://www.uscis.gov/citizenship/testupdates)
+before an interview.
 
 ## Tests
 

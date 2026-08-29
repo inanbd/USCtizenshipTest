@@ -9,6 +9,7 @@ import 'providers/settings_provider.dart';
 import 'providers/study_plan_provider.dart';
 import 'screens/home_screen.dart';
 import 'services/congress_api_service.dart';
+import 'services/state_answers_service.dart';
 import 'services/storage_service.dart';
 import 'services/stt_service.dart';
 import 'services/tts_service.dart';
@@ -39,6 +40,11 @@ class CivicsApp extends StatelessWidget {
         Provider<SttService>.value(value: stt),
         Provider<CongressApiService>.value(value: congress),
         Provider<CivicsApiClient>.value(value: api),
+        // Derived from the client so it always talks to the current one.
+        ProxyProvider<CivicsApiClient, StateAnswersService>(
+          update: (_, client, _) =>
+              StateAnswersService(client, storage, congress: congress),
+        ),
         // Listenable app state.
         ChangeNotifierProvider(create: (_) => SettingsProvider(storage)),
         ChangeNotifierProvider(create: (_) => AuthProvider(api)),

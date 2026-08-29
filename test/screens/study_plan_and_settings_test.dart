@@ -127,7 +127,7 @@ void main() {
       await openSettings(tester);
 
       expect(find.text('Settings'), findsOneWidget);
-      expect(find.text('2008 test (100 questions)'), findsOneWidget);
+      expect(find.textContaining('2008 test (100 questions)'), findsOneWidget);
       expect(
         find.text('Not set — needed for state-specific questions'),
         findsOneWidget,
@@ -148,9 +148,9 @@ void main() {
     testWidgets('switches the test version from settings', (tester) async {
       await openSettings(tester);
 
-      await tester.tap(find.text('2020 · 128Q'));
+      await tester.tap(find.text('2020'));
       await tester.pumpAndSettle();
-      expect(find.text('2020 test (128 questions)'), findsOneWidget);
+      expect(find.textContaining('2020 test (128 questions)'), findsOneWidget);
     });
 
     testWidgets('edits and saves the current officials', (tester) async {
@@ -246,9 +246,11 @@ void main() {
       expect(find.text('D.C. does not have a Governor.'), findsOneWidget);
     });
 
-    testWidgets('live refresh explains that an API key is needed', (
+    testWidgets('a build with no backend says where to get the names', (
       tester,
     ) async {
+      // The plain release APK has no backend URL baked in, so fetching can
+      // only fall back to the user's own Congress.gov key - and there is none.
       await openSettings(tester);
       await tester.tap(find.text('My state info'));
       await tester.pumpAndSettle();
@@ -258,12 +260,12 @@ void main() {
       await tester.tap(find.text('California').last);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Refresh reps from Congress.gov'));
+      await tester.tap(find.text('Fetch my state answers'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Congress.gov API key needed'), findsOneWidget);
-      await tester.tap(find.text('OK'));
-      await tester.pumpAndSettle();
+      // The bundled capital still answers its question.
+      expect(find.text('Sacramento'), findsOneWidget);
+      expect(find.textContaining('Congress.gov API key'), findsOneWidget);
     });
 
     testWidgets('resetting progress clears the known marks', (tester) async {

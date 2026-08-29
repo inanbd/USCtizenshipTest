@@ -1,3 +1,4 @@
+using CivicsPrep.Domain.Enums;
 using CivicsPrep.Application.Common.Interfaces;
 using CivicsPrep.Application.Mapping;
 using CivicsPrep.Contracts.Common;
@@ -42,7 +43,7 @@ public class CreateStudyPlanCommandHandler(
 
         var profile = await db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == userId, ct);
         var version = request.Version?.ToDomain() ?? profile?.TestVersion
-            ?? Domain.Enums.TestVersion.V2008;
+            ?? TestVersionExtensions.Current;
 
         var numbers = await db.Questions
             .AsNoTracking()

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:citizenship_test/api/auth_store.dart';
 import 'package:citizenship_test/api/civics_api_client.dart';
 import 'package:citizenship_test/app.dart';
+import 'package:citizenship_test/models/enums.dart';
 import 'package:citizenship_test/services/congress_api_service.dart';
 import 'package:citizenship_test/services/storage_service.dart';
 import 'package:citizenship_test/services/stt_service.dart';
@@ -134,13 +135,28 @@ void useTallScreen(WidgetTester tester, {Size size = const Size(1080, 2400)}) {
   addTearDown(tester.view.resetDevicePixelRatio);
 }
 
-/// Fresh storage backed by in-memory SharedPreferences.
-Future<StorageService> freshStorage([
+/// Storage backed by in-memory SharedPreferences, with nothing in it.
+///
+/// Use this to assert what the app does on a genuinely first launch — most
+/// notably which test version it picks.
+Future<StorageService> emptyStorage([
   Map<String, Object> initial = const {},
 ]) async {
   SharedPreferences.setMockInitialValues(Map<String, Object>.from(initial));
   return StorageService.create();
 }
+
+/// Fresh storage for a test that asserts against question content.
+///
+/// Pinned to the 2008 set, because that is the set these tests quote. The
+/// app's real default (the 2025 test, the one administered today) is asserted
+/// on its own in providers_test.dart — pinning here keeps a future change of
+/// default from rewriting every widget test.
+Future<StorageService> freshStorage([Map<String, Object> initial = const {}]) =>
+    emptyStorage({
+      StorageKeys.testVersion: TestVersion.v2008.storageKey,
+      ...initial,
+    });
 
 /// Builds the full app widget wired with real providers and test services.
 ///
@@ -151,6 +167,7 @@ Future<CivicsApp> buildTestApp({
   StorageService? storage,
   http.Client? httpClient,
   CivicsApiClient? apiClient,
+  String? baseUrl,
 }) async {
   final store = storage ?? await freshStorage();
   return CivicsApp(
@@ -158,6 +175,11 @@ Future<CivicsApp> buildTestApp({
     tts: TtsService(),
     stt: SttService(),
     congress: CongressApiService(client: httpClient),
-    api: apiClient ?? CivicsApiClient(AuthStore(store), client: httpClient),
+    api:
+        apiClient ??
+        CivicsApiClient(AuthStore(store), client: httpClient, baseUrl: baseUrl),
   );
 }
+
+/// A base URL that reads as a real backend, for tests that drive the API paths.
+const String testBaseUrl = 'https://backend.test';

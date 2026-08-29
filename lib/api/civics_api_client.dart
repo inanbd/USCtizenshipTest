@@ -30,6 +30,10 @@ class CivicsApiClient {
   AuthSession? get session => _session;
   bool get isSignedIn => _session != null;
 
+  /// True when this build points at a real backend. A plain release APK does
+  /// not, and every study feature still has to work.
+  bool get isBackendConfigured => ApiConfig.isRealBaseUrl(_baseUrl);
+
   /// Loads any saved session from disk. Call once at startup.
   AuthSession? restore() {
     _session = _authStore.read();
@@ -166,13 +170,27 @@ class CivicsApiClient {
     return (json as List).cast<Map<String, dynamic>>();
   }
 
+  /// Every state-dependent answer for [stateCode] in one call: capital,
+  /// governor, senators and the full House delegation. Anonymous on purpose —
+  /// state answers are not personal, so the app can refresh them without an
+  /// account.
+  Future<Map<String, dynamic>> fetchStateAnswers(String stateCode) async =>
+      await _send(
+        'GET',
+        '/api/states/${stateCode.toUpperCase()}/answers',
+        authenticated: false,
+      ) as Map<String, dynamic>;
+
   Future<Map<String, dynamic>> fetchOfficials() async =>
       await _send('GET', '/api/settings/officials') as Map<String, dynamic>;
 
   // ---- plumbing ----
 
-  static String _version(TestVersion version) =>
-      version == TestVersion.v2020 ? 'V2020' : 'V2008';
+  static String _version(TestVersion version) => switch (version) {
+    TestVersion.v2008 => 'V2008',
+    TestVersion.v2020 => 'V2020',
+    TestVersion.v2025 => 'V2025',
+  };
 
   Future<dynamic> _send(
     String method,

@@ -35,6 +35,18 @@ public class StatesController : ApiControllerBase
             request.StateCode, request.Governor, request.SenatorOne,
             request.SenatorTwo, request.Representative)));
 
+    /// <summary>
+    /// Every state-dependent civics answer for one state: capital, governor, senators and the
+    /// full House delegation to pick a representative from. Public, so the app can refresh
+    /// without an account.
+    /// </summary>
+    [HttpGet("{stateCode}/answers")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(StateAnswersDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<StateAnswersDto>> Answers(string stateCode) =>
+        Ok(await Mediator.Send(new GetStateAnswersQuery(stateCode)));
+
     /// <summary>Live lookup of a state's members of Congress.</summary>
     [HttpGet("{stateCode}/congress")]
     [Authorize]

@@ -116,21 +116,47 @@ class _VersionSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.read<SettingsProvider>();
-    return SegmentedButton<TestVersion>(
-      segments: const [
-        ButtonSegment(
-          value: TestVersion.v2008,
-          label: Text('2008 · 100Q'),
-          icon: Icon(Icons.history_edu_rounded),
+    final theme = Theme.of(context);
+
+    // Three sets no longer fit as icon segments on a phone, so the years label
+    // the buttons and the caption below says which test the user actually sits.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SegmentedButton<TestVersion>(
+          showSelectedIcon: false,
+          segments: const [
+            ButtonSegment(value: TestVersion.v2025, label: Text('2025')),
+            ButtonSegment(value: TestVersion.v2008, label: Text('2008')),
+            ButtonSegment(value: TestVersion.v2020, label: Text('2020')),
+          ],
+          selected: {version},
+          onSelectionChanged: (s) => settings.setTestVersion(s.first),
         ),
-        ButtonSegment(
-          value: TestVersion.v2020,
-          label: Text('2020 · 128Q'),
-          icon: Icon(Icons.new_releases_rounded),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            Icon(
+              version.isCurrent
+                  ? Icons.check_circle_rounded
+                  : Icons.info_outline_rounded,
+              size: 15,
+              color: version.isCurrent
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                '${version.label} · ${version.applicability}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
-      selected: {version},
-      onSelectionChanged: (s) => settings.setTestVersion(s.first),
     );
   }
 }

@@ -22,6 +22,7 @@ public class DatabaseSeeder(ApplicationDbContext db, ILogger<DatabaseSeeder> log
     public async Task SeedAsync(CancellationToken ct = default)
     {
         await SeedStatesAsync(ct);
+        await SeedGovernorsAsync(ct);
         await SeedQuestionsAsync(ct);
     }
 
@@ -49,6 +50,49 @@ public class DatabaseSeeder(ApplicationDbContext db, ILogger<DatabaseSeeder> log
 
         await db.SaveChangesAsync(ct);
         logger.LogInformation("Seeded states: {Added} added, {Total} total", added, seed.Count);
+    }
+
+    private async Task SeedGovernorsAsync(CancellationToken ct)
+    {
+        var seed = Load<SeedGovernorFile>("governors.json");
+        if (seed is null) return;
+
+        var asOf = DateOnly.TryParse(seed.AsOf, out var parsed)
+            ? parsed
+            : DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var existing = await db.Governors.ToDictionaryAsync(g => g.StateCode, ct);
+        var added = 0;
+
+        foreach (var g in seed.Governors)
+        {
+            var since = DateOnly.TryParse(g.Since ?? string.Empty, out var s) ? s : (DateOnly?)null;
+
+            if (existing.TryGetValue(g.StateCode, out var row))
+            {
+                row.Name = g.Name;
+                row.Since = since;
+                row.AsOf = asOf;
+                row.Source = seed.Source;
+            }
+            else
+            {
+                db.Governors.Add(new Governor
+                {
+                    StateCode = g.StateCode,
+                    Name = g.Name,
+                    Since = since,
+                    AsOf = asOf,
+                    Source = seed.Source,
+                });
+                added++;
+            }
+        }
+
+        await db.SaveChangesAsync(ct);
+        logger.LogInformation(
+            "Seeded governors: {Added} added, {Total} total (as of {AsOf})",
+            added, seed.Governors.Count, asOf);
     }
 
     private async Task SeedQuestionsAsync(CancellationToken ct)
@@ -110,6 +154,7 @@ public class DatabaseSeeder(ApplicationDbContext db, ILogger<DatabaseSeeder> log
     {
         "V2008" => TestVersion.V2008,
         "V2020" => TestVersion.V2020,
+        "V2025" => TestVersion.V2025,
         _ => throw new InvalidOperationException($"Unknown test version '{value}'."),
     };
 

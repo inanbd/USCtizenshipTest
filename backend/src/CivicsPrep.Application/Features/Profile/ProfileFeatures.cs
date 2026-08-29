@@ -1,3 +1,4 @@
+using CivicsPrep.Domain.Enums;
 using CivicsPrep.Application.Common.Interfaces;
 using CivicsPrep.Application.Mapping;
 using CivicsPrep.Contracts.Common;
@@ -22,7 +23,7 @@ public class GetUserSettingsQueryHandler(IApplicationDbContext db, ICurrentUser 
             .FirstOrDefaultAsync(p => p.UserId == userId, ct);
 
         return new UserSettingsDto(
-            (profile?.TestVersion ?? Domain.Enums.TestVersion.V2008).ToDto());
+            (profile?.TestVersion ?? TestVersionExtensions.Current).ToDto());
     }
 }
 

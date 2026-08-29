@@ -32,7 +32,7 @@ void main() {
 
       expect(find.text('0 of 100 marked known'), findsOneWidget);
 
-      await tester.tap(find.text('2020 · 128Q'));
+      await tester.tap(find.text('2020'));
       await tester.pumpAndSettle();
 
       expect(find.text('0 of 128 marked known'), findsOneWidget);
@@ -48,7 +48,7 @@ void main() {
       final storage = await freshStorage();
       await tester.pumpWidget(await buildTestApp(storage: storage));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('2020 · 128Q'));
+      await tester.tap(find.text('2020'));
       await tester.pumpAndSettle();
 
       // Rebuild the app from the same storage, as a relaunch would.
