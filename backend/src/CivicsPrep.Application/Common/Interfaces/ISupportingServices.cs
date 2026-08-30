@@ -1,3 +1,4 @@
+using CivicsPrep.Contracts.Guide;
 using CivicsPrep.Contracts.States;
 using CivicsPrep.Domain.Services;
 
@@ -27,4 +28,14 @@ public interface IClock
 public interface IQuestionShuffler
 {
     IReadOnlyList<T> Take<T>(IReadOnlyList<T> source, int count);
+}
+
+/// <summary>
+/// The naturalization process guide. Static content shipped with the server rather than a
+/// database table: it is the same for everyone, and correcting it should be a deploy, not a
+/// migration.
+/// </summary>
+public interface INaturalizationGuideProvider
+{
+    NaturalizationGuideDto Guide { get; }
 }

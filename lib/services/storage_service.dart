@@ -79,4 +79,8 @@ class StorageKeys {
   static const testHistory = 'progress.testHistory';
 
   static const studyPlan = 'studyPlan.current';
+
+  /// A guide fetched from the backend, kept only while it is newer than the
+  /// copy bundled with this build.
+  static const guide = 'guide.cached';
 }

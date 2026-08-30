@@ -118,6 +118,7 @@ readable anonymously; everything user-specific needs a bearer token.
 | `GET`/`POST`/`PUT`/`DELETE` | `/api/study-plan` | The user's study plan |
 | `GET` | `/api/states` · `/api/states/{code}/congress` | States · live Congress lookup |
 | `GET` | `/api/states/{code}/answers` | Every state answer at once: capital, governor, senators, House delegation |
+| `GET` | `/api/guide` | The naturalization process: steps, timings, how to apply, costs |
 | `GET`/`PUT` | `/api/states/me` | The user's state info |
 | `GET`/`PUT` | `/api/settings` · `/settings/officials` | Test version · current officials |
 
@@ -166,6 +167,20 @@ python3 backend/tools/export_seed_data.py . backend/src/CivicsPrep.Infrastructur
 The exporter asserts the official structure (100, 128 and 128 questions, 20
 starred questions each, a guidance note on every dynamic question) and fails
 rather than writing bad data.
+
+### The naturalization process guide
+
+`data/naturalization_guide.json` at the repo root is authored by hand and used
+by everything: the Flutter app bundles it as an asset, the exporter copies it
+into `SeedData/` where it is embedded in the Infrastructure assembly, and
+`GET /api/guide` serves it. It is static content, not a table — correcting it is
+a deploy, not a migration.
+
+The exporter validates it rather than just copying: the steps must stay in the
+order an applicant lives them, every step needs a timing, the civics variants
+must name the sets the app actually ships, sources must be https, and a
+*proposed* fee change must say it is not in effect. A fee an applicant budgets
+for is not a place for ambiguity.
 
 ### Governors
 

@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import '../providers/study_plan_provider.dart';
 import 'browse/browse_screen.dart';
 import 'flashcards/flashcards_screen.dart';
+import 'guide/guide_screen.dart';
 import 'mock_test/mock_test_setup_screen.dart';
 import 'settings/settings_screen.dart';
 import 'study_plan/study_plan_screen.dart';
@@ -101,6 +102,23 @@ class HomeScreen extends StatelessWidget {
               onTap: () => Navigator.of(
                 context,
               ).push(MaterialPageRoute(builder: (_) => const BrowseScreen())),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'The process',
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            _FeatureTile(
+              icon: Icons.flag_rounded,
+              title: 'From application to citizen',
+              subtitle:
+                  'Filing, biometrics, the interview and the oath — how to '
+                  'apply, what it costs, and how long each step takes.',
+              color: Theme.of(context).colorScheme.secondary,
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const GuideScreen())),
             ),
           ],
         ),

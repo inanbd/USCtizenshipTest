@@ -69,6 +69,7 @@ public static class DependencyInjection
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IOfficialsProvider, OfficialsProvider>();
         services.AddSingleton<IQuestionShuffler, RandomQuestionShuffler>();
+        services.AddSingleton<INaturalizationGuideProvider, NaturalizationGuideProvider>();
 
         services.AddMemoryCache();
         services.AddHttpClient<ICongressDirectory, CongressDirectory>(client =>

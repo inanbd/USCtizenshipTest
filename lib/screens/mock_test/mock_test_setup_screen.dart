@@ -28,8 +28,19 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
   @override
   void initState() {
     super.initState();
-    _count = context.read<SettingsProvider>().testVersion.askedCount;
+    _count = _naturalCount(context.read<SettingsProvider>().testVersion);
   }
+
+  /// How many questions this source is asked at a real interview. The 65/20
+  /// exemption is a shorter test — 10 questions, not the general 20 — so
+  /// switching source resets the count to what that applicant actually faces.
+  int _naturalCount(TestVersion version) =>
+      _source == _Source.senior ? version.seniorAskedCount : version.askedCount;
+
+  int _passMarkFor(TestVersion version, int total) =>
+      _source == _Source.senior && total == version.seniorAskedCount
+      ? version.seniorPassCount
+      : version.passMarkFor(total);
 
   List<Question> _pool(TestVersion version, ProgressProvider progress) {
     switch (_source) {
@@ -105,8 +116,9 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
                     Expanded(
                       child: Text(
                         'You can read or hear each question, and type or speak '
-                        'your answer. Pass by answering ${version.passCount} of '
-                        '${version.askedCount} correctly.',
+                        'your answer. Pass by answering '
+                        '${_passMarkFor(version, effectiveCount)} of '
+                        '$effectiveCount correctly.',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onSecondaryContainer,
                         ),
@@ -131,7 +143,10 @@ class _MockTestSetupScreenState extends State<MockTestSetupScreen> {
                 ButtonSegment(value: _Source.starred, label: Text('Starred')),
               ],
               selected: {_source},
-              onSelectionChanged: (s) => setState(() => _source = s.first),
+              onSelectionChanged: (s) => setState(() {
+                _source = s.first;
+                _count = _naturalCount(version);
+              }),
             ),
             const SizedBox(height: 8),
             Text(

@@ -1,3 +1,5 @@
+import 'package:citizenship_test/models/enums.dart';
+import 'package:citizenship_test/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -227,5 +229,49 @@ void main() {
     await tester.tap(find.text('Set your state'));
     await tester.pumpAndSettle();
     expect(find.text('My State Info'), findsOneWidget);
+  });
+
+  group('the 65/20 setup', () {
+    Future<void> openSetup(WidgetTester tester) async {
+      useTallScreen(tester);
+      await tester.pumpWidget(
+        await buildTestApp(
+          storage: await freshStorage({
+            StorageKeys.testVersion: TestVersion.v2025.storageKey,
+          }),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Mock Test'));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('a 65/20 practice run is 10 questions, not 20', (tester) async {
+      await openSetup(tester);
+
+      // The general 2025 test asks 20.
+      expect(find.text('20 questions'), findsOneWidget);
+      expect(find.textContaining('Pass by answering 12 of 20'), findsOneWidget);
+
+      await tester.tap(find.text('65/20'));
+      await tester.pumpAndSettle();
+
+      // The exemption is a shorter test, and the banner has to say so.
+      expect(find.text('10 questions'), findsOneWidget);
+      expect(find.textContaining('Pass by answering 6 of 10'), findsOneWidget);
+      expect(find.text('20 questions available in this set.'), findsOneWidget);
+    });
+
+    testWidgets('switching back restores the full-length test', (tester) async {
+      await openSetup(tester);
+
+      await tester.tap(find.text('65/20'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('All'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('20 questions'), findsOneWidget);
+      expect(find.textContaining('Pass by answering 12 of 20'), findsOneWidget);
+    });
   });
 }

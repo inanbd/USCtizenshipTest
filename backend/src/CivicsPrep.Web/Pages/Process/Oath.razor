@@ -1,0 +1,68 @@
+@page "/process/oath"
+@inherits GuidePageBase
+
+<PageTitle>The oath ceremony — Civics Prep</PageTitle>
+
+<p class="small"><a href="process">← The naturalization process</a></p>
+<h1>The oath, and what comes after</h1>
+<p class="muted" style="max-width:62ch">
+    The last step, and the only one that actually makes you a citizen.
+</p>
+
+@if (Loading)
+{
+    <p class="loading">Loading the guide…</p>
+}
+else if (Error is not null)
+{
+    <p class="alert alert-error">@Error</p>
+}
+else if (Guide is not null)
+{
+    @if (Step("oath") is { } oath)
+    {
+        <div class="card" style="margin-top:1.25rem">
+            <div class="spread">
+                <h2 style="margin:0">@oath.Title</h2>
+                <span class="tag">@oath.Timing</span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(oath.TimingDetail))
+            {
+                <p class="muted small" style="margin:.35rem 0 0">@oath.TimingDetail</p>
+            }
+            <p style="margin:.6rem 0 0"><strong>@oath.Summary</strong></p>
+            <ul class="answers small" style="margin-top:.6rem">
+                @foreach (var detail in oath.Details)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="card">
+        <h2>Once you are sworn in</h2>
+        <ul class="answers small">
+            @foreach (var item in Guide.AfterOath)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Still studying?</h2>
+        <p class="muted small">
+            The oath is the finish line, but the civics test comes first. Keep drilling until
+            every question is one you would rather be asked.
+        </p>
+        <div class="row" style="margin-top:.9rem">
+            <a class="btn btn-primary" href="test">Take a mock test</a>
+            <a class="btn btn-ghost" href="process/interview">What the interview involves</a>
+        </div>
+    </div>
+
+    <p class="muted small" style="margin-top:1.5rem">
+        Reviewed @Guide.ReviewedOn. @Guide.Disclaimer
+    </p>
+}

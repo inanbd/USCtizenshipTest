@@ -8,20 +8,23 @@
     <NotAuthorized>
         <h1>Pass the U.S. citizenship civics test</h1>
         <p class="muted" style="max-width:60ch">
-            Both official question sets, mock tests that grade your written answers, flashcards,
-            and a study plan built from your interview date.
+            Every official question set, mock tests that grade your written answers, flashcards,
+            a study plan built from your interview date, and a walkthrough of the whole
+            naturalization process.
         </p>
         <div class="row" style="margin:1.25rem 0 2rem">
             <a class="btn btn-primary" href="register">Create a free account</a>
             <a class="btn btn-ghost" href="study">Browse the questions</a>
+            <a class="btn btn-ghost" href="process">How naturalization works</a>
         </div>
 
         <div class="grid">
             <div class="card">
-                <h2>Two official sets</h2>
+                <h2>All three official sets</h2>
                 <p class="muted small">
-                    The 2008 test (100 questions, pass with 6 of 10) and the 2020 test
-                    (128 questions, pass with 12 of 20).
+                    The 2025 test (128 questions, pass with 12 of 20) for anyone who filed on or
+                    after 20 Oct 2025, the 2008 test (100 questions, pass with 6 of 10) for
+                    everyone before that, and the withdrawn 2020 set for reference.
                 </p>
             </div>
             <div class="card">
@@ -31,6 +34,12 @@
                     strict where it matters.
                 </p>
             </div>
+            <a class="card" href="process" style="text-decoration:none;color:inherit">
+                <h2>The whole process</h2>
+                <p class="muted small">
+                    Filing to oath, what each step costs, and how long it usually takes.
+                </p>
+            </a>
             <div class="card">
                 <h2>Answers for your state</h2>
                 <p class="muted small">
@@ -104,6 +113,12 @@
                     <h2>Browse questions</h2>
                     <p class="muted small">Search by topic, question or answer.</p>
                 </a>
+                <a class="card" href="process" style="text-decoration:none;color:inherit">
+                    <h2>The process</h2>
+                    <p class="muted small">
+                        Filing to oath, with costs and typical timings.
+                    </p>
+                </a>
             </div>
         }
     </Authorized>
@@ -137,6 +152,10 @@
         }
     }
 
-    private static string VersionLabel(TestVersionDto v) =>
-        v == TestVersionDto.V2020 ? "2020 · 128Q" : "2008 · 100Q";
+    private static string VersionLabel(TestVersionDto v) => v switch
+    {
+        TestVersionDto.V2020 => "2020 · 128Q",
+        TestVersionDto.V2025 => "2025 · 128Q",
+        _ => "2008 · 100Q",
+    };
 }

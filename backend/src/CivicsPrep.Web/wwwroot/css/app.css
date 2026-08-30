@@ -84,6 +84,7 @@ footer {
 }
 .card + .card { margin-top: 1rem; }
 .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.grid > .card + .card { margin-top: 0; }
 .row { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
 .spread { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
 .muted { color: var(--muted); }
@@ -163,3 +164,24 @@ label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .3rem
 #blazor-error-ui .dismiss { cursor: pointer; float: right; }
 
 .loading { color: var(--muted); }
+
+/* --- the process timeline --- */
+.timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.timeline > li { display: flex; gap: 1rem; align-items: flex-start; position: relative; }
+.timeline > li + li { margin-top: 1rem; }
+.timeline-dot {
+    flex: 0 0 2.2rem; height: 2.2rem; border-radius: 50%;
+    background: var(--navy); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+    position: relative; z-index: 1;
+}
+/* The connecting line runs the full height of the step, from this dot to the next. */
+.timeline > li:not(:last-child)::before {
+    content: ""; position: absolute; top: 2.2rem; left: 1.1rem;
+    width: 2px; height: calc(100% - 2.2rem + 1rem);
+    background: var(--line); transform: translateX(-50%);
+}
+.timeline-body { flex: 1; min-width: 0; }
+.timeline-body + .timeline-body { margin-top: 0; }
+
+.cost { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }

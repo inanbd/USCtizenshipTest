@@ -1,0 +1,111 @@
+@page "/process/interview"
+@inherits GuidePageBase
+
+<PageTitle>The interview and tests — Civics Prep</PageTitle>
+
+<p class="small"><a href="process">← The naturalization process</a></p>
+<h1>The interview and the tests</h1>
+<p class="muted" style="max-width:62ch">
+    One appointment covers three things: your application, your English, and your civics.
+</p>
+
+@if (Loading)
+{
+    <p class="loading">Loading the guide…</p>
+}
+else if (Error is not null)
+{
+    <p class="alert alert-error">@Error</p>
+}
+else if (Guide is not null)
+{
+    @if (Step("interview") is { } interview)
+    {
+        <div class="card" style="margin-top:1.25rem">
+            <div class="spread">
+                <h2 style="margin:0">On the day</h2>
+                <span class="tag">@interview.Timing</span>
+            </div>
+            <p style="margin:.6rem 0 0">@interview.Summary</p>
+            <ul class="answers small" style="margin-top:.6rem">
+                @foreach (var detail in interview.Details)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="grid" style="margin-top:1rem">
+        <div class="card">
+            <h2>The English test</h2>
+            <p class="muted small">@Guide.Tests.English.Summary</p>
+            <ul class="answers small">
+                @foreach (var part in Guide.Tests.English.Parts)
+                {
+                    <li>@part</li>
+                }
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>The civics test</h2>
+            <p class="muted small">@Guide.Tests.Civics.Summary</p>
+            <ul class="answers small">
+                @foreach (var variant in Guide.Tests.Civics.Variants)
+                {
+                    <li><strong>@variant.Label</strong> — @variant.Detail</li>
+                }
+            </ul>
+            <p class="muted small" style="margin:.6rem 0 0">@Guide.Tests.Civics.Note</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Practise the set that applies to you</h2>
+        <p class="muted small">
+            Pick your test version in settings, then drill it here. The mock test grades what you
+            type, the way the officer grades what you say.
+        </p>
+        <div class="row" style="margin-top:.9rem">
+            <a class="btn btn-primary" href="test">Take a mock test</a>
+            <a class="btn btn-ghost" href="study">Browse the questions</a>
+            <a class="btn btn-ghost" href="plan">Build a study plan</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>If you do not have to take the tests</h2>
+        <p class="muted small">
+            Age and years as a permanent resident can exempt you from English, and shorten the
+            civics test.
+        </p>
+        <ul class="q-list">
+            @foreach (var exemption in Guide.Tests.Exemptions)
+            {
+                <li>
+                    <span class="tag" style="flex:0 0 auto">@exemption.Label</span>
+                    <div style="flex:1">@exemption.Detail</div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>If you do not pass</h2>
+        <p style="margin:0">@Guide.Tests.Retake</p>
+        @if (Step("decision") is { } decision)
+        {
+            <ul class="answers small" style="margin-top:.6rem">
+                @foreach (var detail in decision.Details)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        }
+    </div>
+
+    <p class="muted small" style="margin-top:1.5rem">
+        Reviewed @Guide.ReviewedOn. @Guide.Disclaimer
+    </p>
+}

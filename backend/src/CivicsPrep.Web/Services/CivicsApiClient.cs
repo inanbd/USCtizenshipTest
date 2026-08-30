@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using CivicsPrep.Application.Features.Profile;
 using CivicsPrep.Contracts.Auth;
+using CivicsPrep.Contracts.Guide;
 using CivicsPrep.Contracts.Common;
 using CivicsPrep.Contracts.Progress;
 using CivicsPrep.Contracts.Questions;
@@ -123,6 +124,12 @@ public class CivicsApiClient(HttpClient http)
     /// <summary>Capital, governor, senators and the state's House delegation in one call.</summary>
     public Task<StateAnswersDto> GetStateAnswersAsync(string stateCode) =>
         GetAsync<StateAnswersDto>($"api/states/{stateCode}/answers");
+
+    /// <summary>The naturalization process guide. Anonymous, and cached for the session.</summary>
+    public async Task<NaturalizationGuideDto> GetGuideAsync() =>
+        _guide ??= await GetAsync<NaturalizationGuideDto>("api/guide");
+
+    private NaturalizationGuideDto? _guide;
 
     public Task<OfficialsDto> GetOfficialsAsync() => GetAsync<OfficialsDto>("api/settings/officials");
 

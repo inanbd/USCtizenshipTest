@@ -22,6 +22,7 @@ where you live from the backend.
 |---|---|
 | `lib/`, `test/`, `android/` | The Flutter mobile app (Android) |
 | `backend/` | .NET 10 solution: API, Blazor website, and their tests |
+| `data/` | The naturalization process guide — authored once, used by all three |
 
 The app works fully offline against its bundled question set. Signing in adds an
 account whose progress, study plan and test history sync with the website
@@ -75,6 +76,14 @@ flutter run --dart-define=API_BASE_URL=http://10.0.2.2:5199
   - Every field stays editable, and **anything you type wins** over a later fetch
   - A build with no backend configured falls back to your own free
     [Congress.gov API](https://api.congress.gov) key
+- **The naturalization process, end to end** — the seven steps from checking
+  you qualify to taking the oath, with how long each usually takes
+  - **How to apply**: filing online vs. by mail, and what to have ready first
+  - **What it costs**: the current fees, the reduced fee and the fee waiver,
+    plus any proposed change clearly flagged as *not in effect*
+  - **The interview**: the English test, which civics set your filing date buys
+    you, the 50/20 · 55/15 · 65/20 exemptions, and what happens if you fail
+  - Reads offline from a bundled copy; the server can publish a newer one
 - **Editable "current officials"** for the time-sensitive federal questions
   (President, VP, Speaker, Chief Justice, President's party)
 - Light / dark / system theme, adjustable speech speed, progress persistence
@@ -121,9 +130,11 @@ lib/
   data/          Official 2008 (100), 2020 (128) & 2025 (128) question sets,
                  state capitals, QuestionRepository (resolves dynamic answers)
   services/      TTS, STT, storage, answer matcher, study-plan generator,
-                 state answers (backend + cache), Congress.gov API client
+                 state answers (backend + cache), naturalization guide,
+                 Congress.gov API client
   providers/     Settings, Progress, StudyPlan, MockTest (ChangeNotifier)
-  screens/       home, mock_test/, flashcards/, study_plan/, browse/, settings/
+  screens/       home, mock_test/, flashcards/, study_plan/, browse/, guide/,
+                 settings/
   widgets/       SpeakerButton, AnswerReveal
   theme/         app theme
 test/
@@ -131,7 +142,7 @@ test/
                  + dynamic answer resolution
   models/        JSON round-trips for everything persisted to disk
   services/      answer matcher, study plan generator, Congress.gov client,
-                 state answers (fetch, cache, manual override)
+                 state answers (fetch, cache, manual override), the guide
   providers/     settings/progress/study-plan persistence, mock-test controller
   screens/       end-to-end widget tests for every feature
   api/           API client and progress sync
@@ -144,7 +155,7 @@ with the backend when the user is signed in.
 
 ## Testing
 
-281 tests cover the app end to end:
+308 tests cover the app end to end:
 
 ```bash
 flutter test
@@ -158,6 +169,10 @@ flutter test
 - **State answers** cover the fetch-cache-override contract: a cached payload
   works offline, a failed refresh never wipes it, and a name you typed survives
   the next fetch.
+- **The process guide** is pinned to the steps in the order an applicant lives
+  them, the current fees, and the rule that a *proposed* fee never renders as
+  the current one. The bundled copy must read with no backend at all, and a
+  server copy only replaces it when it was reviewed more recently.
 - **Answer matching** covers lenient grading (case, punctuation, parentheticals,
   typos, spoken slips) *and* the cases that must stay strict: "Vice President" is
   never accepted for "the President", negated answers are rejected, and one vague
@@ -170,7 +185,7 @@ flutter test
   the progress sync — including that a signed-out app never calls the network and
   that a failed sync never surfaces as an error to the user.
 
-The backend has its own 135 tests; see [`backend/README.md`](backend/README.md).
+The backend has its own 142 tests; see [`backend/README.md`](backend/README.md).
 
 ## Continuous integration and releases
 
@@ -193,10 +208,26 @@ git push origin v1.0.0
 > Released APKs are signed with Flutter's **debug** key so they install directly
 > for testing. Add your own keystore before publishing to the Play Store.
 
+## The naturalization guide
+
+`data/naturalization_guide.json` is the single source for the process content:
+the steps and their timings, how to apply, the fees, and the test rules. The
+Flutter app bundles it as an asset (so it reads offline), the backend embeds the
+same file and serves it at `GET /api/guide`, and the website renders it at
+`/process`. `backend/tools/export_seed_data.py` copies and validates it, and CI
+fails if the two copies drift.
+
+It carries a `reviewedOn` date, shown wherever the guide is. When the server's
+copy is newer than the one bundled in an installed app, the app takes the
+server's — so a fee change reaches users without an app release.
+
 ## Data sources & accuracy
 
 - Questions and accepted answers are the official USCIS civics questions
   (2008, 2020 and 2025 versions). The 2025 set is M-1778 (09/25).
+- Process steps, timings and fees are from **uscis.gov**, with the review date
+  shown on every screen that uses them. Processing times are typical ranges, not
+  promises — look up your own field office.
 - Answers marked as depending on your **state** or on **current officeholders**
   are resolved at runtime and flagged in the UI. Governors come from a table the
   backend maintains, stamped with the date it was last verified; senators and

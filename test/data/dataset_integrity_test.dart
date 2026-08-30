@@ -377,6 +377,29 @@ void main() {
     });
   });
 
+  group('the 65/20 exemption', () {
+    // The exemption did not change with the 2025 test: an applicant 65 or older
+    // with 20 years as a permanent resident still gets a 10-question test, not
+    // the 20 the general 2025 test asks.
+    for (final version in TestVersion.values) {
+      test('${version.shortLabel}: asks 10 and passes at 6', () {
+        expect(version.seniorAskedCount, 10);
+        expect(version.seniorPassCount, 6);
+      });
+
+      test('${version.shortLabel}: 60% of 10 is the same 6', () {
+        expect(version.passMarkFor(10), version.seniorPassCount);
+      });
+    }
+
+    test('a shortened practice run is still graded at 60%', () {
+      expect(TestVersion.v2025.passMarkFor(1), 1);
+      expect(TestVersion.v2025.passMarkFor(5), 3);
+      expect(TestVersion.v2025.passMarkFor(20), 12);
+      expect(TestVersion.v2008.passMarkFor(10), 6);
+    });
+  });
+
   group('state data', () {
     test('covers all 50 states plus D.C.', () {
       expect(kStates.length, 51);

@@ -37,3 +37,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    # The naturalization process guide. Bundled so it reads offline, and shared
+    # verbatim with the backend (see backend/tools/export_seed_data.py).
+    - data/naturalization_guide.json

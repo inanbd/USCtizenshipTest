@@ -184,6 +184,12 @@ class CivicsApiClient {
   Future<Map<String, dynamic>> fetchOfficials() async =>
       await _send('GET', '/api/settings/officials') as Map<String, dynamic>;
 
+  /// The naturalization process guide. Anonymous — someone still deciding
+  /// whether to apply has no account yet.
+  Future<Map<String, dynamic>> fetchGuide() async =>
+      await _send('GET', '/api/guide', authenticated: false)
+          as Map<String, dynamic>;
+
   // ---- plumbing ----
 
   static String _version(TestVersion version) => switch (version) {

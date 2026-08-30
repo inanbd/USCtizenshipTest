@@ -1,0 +1,263 @@
+{
+  "reviewedOn": "2026-08-29",
+  "disclaimer": "Study aid only, not legal advice and not affiliated with USCIS. Fees, timings and rules change. Check uscis.gov before you rely on anything here.",
+  "timeline": {
+    "medianMonths": 6,
+    "typicalLowMonths": 6,
+    "typicalHighMonths": 12,
+    "summary": "Most people are sworn in 6 to 12 months after filing.",
+    "note": "The national median from filing to decision has been around 5 to 6 months, but USCIS measures itself at the 80th percentile, where field offices range from roughly 3 to 17 months. Your field office is the single biggest factor, so look yours up rather than trusting a national number."
+  },
+  "steps": [
+    {
+      "key": "eligibility",
+      "title": "Check that you qualify",
+      "timing": "Before you file",
+      "timingDetail": "You can file up to 90 days early",
+      "summary": "Most applicants qualify on the 5-year rule; 3 years if you are married to and living with a U.S. citizen.",
+      "details": [
+        "Be 18 or older and a permanent resident (green card holder) for 5 years — or 3 years if you have been married to and living with the same U.S. citizen for those 3 years.",
+        "Continuous residence: no single trip abroad of 6 months or more, and no trip of a year or more, during the qualifying period.",
+        "Physical presence: at least 30 months inside the U.S. out of the last 5 years (18 of 36 on the 3-year rule).",
+        "Have lived at least 3 months in the state or USCIS district where you file.",
+        "Good moral character over the qualifying period, and attachment to the Constitution.",
+        "Pass the English and civics tests, unless an exemption applies to you.",
+        "You may file up to 90 days before you hit the 5- or 3-year mark. Filing even a day earlier than that gets the application rejected."
+      ]
+    },
+    {
+      "key": "file",
+      "title": "File Form N-400",
+      "timing": "Day 0",
+      "timingDetail": "The clock starts the day USCIS receives it",
+      "summary": "Apply online with a USCIS account, or by mail. Online is $50 cheaper and easier to track.",
+      "details": [
+        "Online filing at my.uscis.gov walks you through the form, lets you upload evidence, and shows case status and messages in one place.",
+        "Paper filing is required if you are requesting a reduced fee or a fee waiver.",
+        "Answer every question honestly. A wrong answer that looks like concealment is far more damaging than the fact you were hiding.",
+        "Keep a copy of everything you send, plus your receipt number."
+      ]
+    },
+    {
+      "key": "receipt",
+      "title": "Receipt notice",
+      "timing": "1–4 weeks after filing",
+      "timingDetail": "Form I-797C",
+      "summary": "USCIS confirms it has your application and gives you a receipt number.",
+      "details": [
+        "The receipt number is how you track your case online and how you look up processing times for your field office.",
+        "Check that your name, date of birth and A-number are printed correctly. Errors here follow you through the whole case.",
+        "Filing also extends your green card while the case is pending — the receipt notice is the proof of that."
+      ]
+    },
+    {
+      "key": "biometrics",
+      "title": "Biometrics appointment",
+      "timing": "Typically 3–8 weeks after filing",
+      "timingDetail": "About 20 minutes at the appointment",
+      "summary": "Fingerprints, photo and signature, for the FBI background check.",
+      "details": [
+        "The appointment notice tells you the date, time and application support center. Reschedule before the date if you cannot make it — missing it without notice can get your case closed.",
+        "Bring the appointment notice and your green card.",
+        "USCIS often reuses fingerprints it already has and waives the appointment entirely. If that happens you get a notice saying so; it is not a problem.",
+        "The background check runs in the background from here on, and is a common reason a case sits quietly for a while."
+      ]
+    },
+    {
+      "key": "interview",
+      "title": "Interview and tests",
+      "timing": "Typically 4–10 months after filing",
+      "timingDetail": "The appointment itself runs 20–40 minutes",
+      "summary": "An officer goes through your N-400 under oath, then gives you the English and civics tests.",
+      "details": [
+        "Bring the appointment notice, your green card, your state ID, and every passport and travel document covering the qualifying period.",
+        "Bring originals of anything you only sent copies of, plus updates: new trips, a new address, a new job, anything that changed since you filed.",
+        "The officer confirms your answers on the N-400 out loud. This doubles as the speaking part of the English test.",
+        "Then the reading and writing tests, then the civics test.",
+        "You leave with Form N-652, which tells you what happened."
+      ]
+    },
+    {
+      "key": "decision",
+      "title": "Decision",
+      "timing": "Usually the same day",
+      "timingDetail": "Up to 120 days if continued",
+      "summary": "Granted, continued, or denied — you normally find out before you leave.",
+      "details": [
+        "Granted: your case moves to an oath ceremony.",
+        "Continued: something is missing, or you did not pass part of a test. For a failed test, USCIS schedules a second interview 60 to 90 days later and re-tests only the part you failed.",
+        "Denied: you can request a hearing with Form N-336 within 30 days of the denial, and you can reapply later.",
+        "Failing the same part twice means denial, so treat the second interview as the last one."
+      ]
+    },
+    {
+      "key": "oath",
+      "title": "Oath of Allegiance",
+      "timing": "Same day, or 2 weeks–3 months later",
+      "timingDetail": "Form N-445 is the ceremony notice",
+      "summary": "You become a citizen the moment you take the oath — not before.",
+      "details": [
+        "Some field offices swear you in the same day as the interview. Otherwise Form N-445 arrives by mail, usually 2 to 3 weeks after the interview, with the date and place.",
+        "Complete the questionnaire on the back of the N-445 before you arrive: it asks what you have done since the interview (travel, arrests, marriage).",
+        "Bring your green card. You hand it in at the ceremony.",
+        "You take the Oath of Allegiance and receive your Certificate of Naturalization. Check every detail on it before you leave the building."
+      ]
+    }
+  ],
+  "afterOath": [
+    "Apply for a U.S. passport — it is the easiest proof of citizenship to carry, and it means you are not risking your only certificate.",
+    "Update Social Security so your record shows citizenship.",
+    "Register to vote. Many ceremonies have registration desks on site.",
+    "Keep the Certificate of Naturalization somewhere safe. Replacing it costs money and takes months."
+  ],
+  "applying": {
+    "methods": [
+      {
+        "name": "Online",
+        "fee": "$710",
+        "summary": "Create a free account at my.uscis.gov, fill in the N-400, upload your evidence, and pay by card or bank transfer.",
+        "points": [
+          "$50 cheaper than paper.",
+          "Case status, notices and secure messages all in one account.",
+          "Evidence is uploaded, so nothing gets lost in the mail.",
+          "Not available if you are requesting a reduced fee or a fee waiver."
+        ]
+      },
+      {
+        "name": "By mail",
+        "fee": "$760",
+        "summary": "Download the current N-400 from uscis.gov/n-400, fill it in, and mail it with your evidence and payment to the address for your state.",
+        "points": [
+          "Required if you want the reduced fee (Form I-942) or a fee waiver (Form I-912).",
+          "USCIS no longer takes personal checks for most paper filings — pay by card with Form G-1450, or by bank transfer with Form G-1650.",
+          "Use the edition of the form currently listed on uscis.gov. An out-of-date edition gets rejected.",
+          "Mail it so you get delivery confirmation."
+        ]
+      }
+    ],
+    "checklist": [
+      "A copy of both sides of your green card.",
+      "Every trip outside the U.S. of 24 hours or more in the last 5 years (3 on the marriage rule), with exact dates.",
+      "Tax records, or proof you have filed and are on a payment plan if you owe.",
+      "Marriage certificate and proof of your spouse's citizenship, if you are applying on the 3-year rule, plus divorce or death records ending any earlier marriage.",
+      "Court dispositions for any arrest, citation or conviction — including ones dismissed, expunged or sealed.",
+      "Your Selective Service number, if you are male and lived in the U.S. between the ages of 18 and 26.",
+      "Two passport-style photos, only if you live outside the U.S."
+    ]
+  },
+  "costs": {
+    "items": [
+      {
+        "label": "Form N-400, filed online",
+        "amount": "$710",
+        "when": "At filing"
+      },
+      {
+        "label": "Form N-400, filed by mail",
+        "amount": "$760",
+        "when": "At filing"
+      },
+      {
+        "label": "Biometric services",
+        "amount": "$0",
+        "when": "Included",
+        "note": "The separate $85 biometrics fee was folded into the filing fee on 1 April 2024."
+      },
+      {
+        "label": "Reduced fee (Form I-942)",
+        "amount": "$380",
+        "when": "At filing",
+        "note": "Household income between 150% and 400% of the Federal Poverty Guidelines. Paper filing only."
+      },
+      {
+        "label": "Fee waiver (Form I-912)",
+        "amount": "$0",
+        "when": "At filing",
+        "note": "Income under 150% of the Federal Poverty Guidelines, a means-tested benefit, or financial hardship. Paper filing only."
+      }
+    ],
+    "notes": [
+      "The fee is not refunded if your application is denied or you withdraw it.",
+      "A lawyer is optional and is the largest variable cost if you use one. Accredited non-profits often help for free — find one through the DOJ recognised provider list.",
+      "If you claim a medical disability exception with Form N-648, the doctor's appointment is your cost.",
+      "After the oath, a U.S. passport is a separate State Department fee."
+    ],
+    "proposedChange": {
+      "status": "Proposed, not in effect",
+      "summary": "DHS proposed on 23 June 2026 to raise the N-400 fee to $1,280 online and $1,330 by mail, and to end both the reduced fee and the fee waiver for naturalization. The comment period closed on 24 August 2026.",
+      "impact": "Nothing changes until a final rule is published and takes effect. The fees above are the ones being charged now. If you are close to eligible and the cost matters to you, this is a reason to file sooner rather than later.",
+      "url": "https://www.federalregister.gov/documents/2026/06/23/2026-12542/naturalization-application-fee-adjustments"
+    }
+  },
+  "tests": {
+    "english": {
+      "summary": "Three parts, all judged by the officer at your interview.",
+      "parts": [
+        "Speaking: assessed from how you answer the officer's questions about your N-400. There is no separate speaking test.",
+        "Reading: read 1 of up to 3 sentences correctly, out loud.",
+        "Writing: write 1 of up to 3 sentences correctly, as the officer dictates it."
+      ]
+    },
+    "civics": {
+      "summary": "Which set you get depends on the day USCIS received your N-400, not on when your interview is.",
+      "variants": [
+        {
+          "label": "Filed before 20 October 2025",
+          "detail": "The 2008 test: 10 questions drawn from 100, pass with 6.",
+          "version": "v2008"
+        },
+        {
+          "label": "Filed on or after 20 October 2025",
+          "detail": "The 2025 test: 20 questions drawn from 128, pass with 12.",
+          "version": "v2025"
+        }
+      ],
+      "note": "The officer stops as soon as you have enough right answers, so a perfect start ends the test early."
+    },
+    "exemptions": [
+      {
+        "label": "50/20",
+        "detail": "50 or older with 20 years as a permanent resident: no English test. Take the civics test in your own language with an interpreter."
+      },
+      {
+        "label": "55/15",
+        "detail": "55 or older with 15 years as a permanent resident: same as 50/20."
+      },
+      {
+        "label": "65/20",
+        "detail": "65 or older with 20 years as a permanent resident: no English test, and you only study the 20 specially marked civics questions. You are asked up to 10 of them and pass with 6."
+      },
+      {
+        "label": "Medical exception (Form N-648)",
+        "detail": "A licensed doctor certifies a physical or developmental disability or mental impairment that prevents you from learning English, civics, or both. File it with your N-400 where you can."
+      }
+    ],
+    "retake": "Fail a part and USCIS re-tests only that part at a second interview, 60 to 90 days later. Failing the same part twice means the application is denied."
+  },
+  "sources": [
+    {
+      "label": "Form N-400 and current fees",
+      "url": "https://www.uscis.gov/n-400"
+    },
+    {
+      "label": "Check processing times for your field office",
+      "url": "https://egov.uscis.gov/processing-times/"
+    },
+    {
+      "label": "Fee calculator",
+      "url": "https://www.uscis.gov/feecalculator"
+    },
+    {
+      "label": "The naturalization interview and test",
+      "url": "https://www.uscis.gov/citizenship/learn-about-citizenship/the-naturalization-interview-and-test"
+    },
+    {
+      "label": "Civics test updates and current officeholders",
+      "url": "https://www.uscis.gov/citizenship/testupdates"
+    },
+    {
+      "label": "Find free or low-cost legal help",
+      "url": "https://www.justice.gov/eoir/recognition-accreditation-roster-reports"
+    }
+  ]
+}

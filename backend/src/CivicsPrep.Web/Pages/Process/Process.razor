@@ -1,0 +1,147 @@
+@page "/process"
+@inherits GuidePageBase
+
+<PageTitle>The naturalization process — Civics Prep</PageTitle>
+
+<h1>From application to citizen</h1>
+<p class="muted" style="max-width:62ch">
+    What actually happens after you file Form N-400, in the order it happens, and how long
+    each part usually takes.
+</p>
+
+@if (Loading)
+{
+    <p class="loading">Loading the guide…</p>
+}
+else if (Error is not null)
+{
+    <p class="alert alert-error">@Error</p>
+}
+else if (Guide is not null)
+{
+    <div class="card" style="margin-top:1.25rem">
+        <div class="spread">
+            <h2 style="margin:0">@Guide.Timeline.Summary</h2>
+            <span class="tag">Median @Guide.Timeline.MedianMonths months</span>
+        </div>
+        <p class="muted small" style="margin:.75rem 0 0">@Guide.Timeline.Note</p>
+        <p style="margin:.9rem 0 0">
+            <a class="btn btn-ghost btn-sm" href="https://egov.uscis.gov/processing-times/"
+               target="_blank" rel="noopener">Look up your field office →</a>
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Estimate your dates</h2>
+        <p class="muted small">
+            Enter the day USCIS received your N-400. These are typical windows from the guide,
+            not a promise from USCIS.
+        </p>
+        <div class="field" style="max-width:260px">
+            <label for="filed">Date filed</label>
+            <input id="filed" type="date" @bind="_filedOn" @bind:event="oninput" />
+        </div>
+
+        @if (_filedOn is { } filed)
+        {
+            <ul class="q-list" style="margin-top:1rem">
+                @foreach (var (label, low, high) in Estimates)
+                {
+                    <li>
+                        <div style="flex:1">
+                            <strong>@label</strong>
+                            <div class="muted small">
+                                @filed.AddDays(low).ToString("d MMM yyyy")
+                                – @filed.AddDays(high).ToString("d MMM yyyy")
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+            <p class="muted small" style="margin:.75rem 0 0">
+                Filed @filed.ToString("d MMM yyyy"). If your field office is slower than the
+                national median, everything after biometrics shifts later together.
+            </p>
+        }
+    </div>
+
+    <h2 style="margin:2rem 0 .75rem">The seven steps</h2>
+    <ol class="timeline">
+        @foreach (var (step, index) in Guide.Steps.Select((s, i) => (s, i)))
+        {
+            <li>
+                <div class="timeline-dot">@(index + 1)</div>
+                <div class="timeline-body card">
+                    <div class="spread" style="align-items:flex-start">
+                        <h3 style="margin:0">@step.Title</h3>
+                        <span class="tag">@step.Timing</span>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(step.TimingDetail))
+                    {
+                        <p class="muted small" style="margin:.35rem 0 0">@step.TimingDetail</p>
+                    }
+                    <p style="margin:.6rem 0 0">@step.Summary</p>
+                    <ul class="answers" style="margin-top:.6rem">
+                        @foreach (var detail in step.Details)
+                        {
+                            <li class="small">@detail</li>
+                        }
+                    </ul>
+                    @if (step.Key == "file")
+                    {
+                        <p style="margin:.8rem 0 0">
+                            <a class="btn btn-ghost btn-sm" href="process/apply">
+                                How to apply and what it costs →
+                            </a>
+                        </p>
+                    }
+                    @if (step.Key == "interview")
+                    {
+                        <p style="margin:.8rem 0 0">
+                            <a class="btn btn-ghost btn-sm" href="process/interview">
+                                What the interview and tests involve →
+                            </a>
+                        </p>
+                    }
+                    @if (step.Key == "oath")
+                    {
+                        <p style="margin:.8rem 0 0">
+                            <a class="btn btn-ghost btn-sm" href="process/oath">
+                                The ceremony, and what comes after →
+                            </a>
+                        </p>
+                    }
+                </div>
+            </li>
+        }
+    </ol>
+
+    <div class="card">
+        <h2>Sources</h2>
+        <ul class="answers small">
+            @foreach (var source in Guide.Sources)
+            {
+                <li><a href="@source.Url" target="_blank" rel="noopener">@source.Label</a></li>
+            }
+        </ul>
+        <p class="muted small" style="margin:.9rem 0 0">
+            Reviewed @Guide.ReviewedOn. @Guide.Disclaimer
+        </p>
+    </div>
+}
+
+@code {
+    private DateOnly? _filedOn = DateOnly.FromDateTime(DateTime.Today);
+
+    /// <summary>
+    /// Day offsets from filing, taken from the same typical ranges the guide states in prose.
+    /// Kept here rather than in the data because they are this page's arithmetic, not content.
+    /// </summary>
+    private static readonly (string Label, int Low, int High)[] Estimates =
+    [
+        ("Receipt notice", 7, 28),
+        ("Biometrics appointment", 21, 56),
+        ("Interview and tests", 120, 300),
+        ("Oath ceremony", 120, 365),
+    ];
+}

@@ -50,7 +50,17 @@ extension TestVersionX on TestVersion {
     TestVersion.v2025 => 12,
   };
 
-  /// USCIS passes both versions at 60% (6 of 10, 12 of 20).
+  /// How many questions a 65/20 applicant is asked, on any version.
+  ///
+  /// The exemption did not change with the test: someone 65 or older with 20
+  /// years as a permanent resident studies only the 20 marked questions and is
+  /// asked up to 10 of them — not the 20 the general 2025 test asks.
+  int get seniorAskedCount => 10;
+
+  /// How many a 65/20 applicant must get right. Still 60%.
+  int get seniorPassCount => 6;
+
+  /// USCIS passes every version at 60% (6 of 10, 12 of 20).
   double get passRatio => 0.6;
 
   /// How many correct answers a practice test of [total] questions needs.

@@ -1,0 +1,120 @@
+@page "/process/apply"
+@inherits GuidePageBase
+
+<PageTitle>How to apply and what it costs — Civics Prep</PageTitle>
+
+<p class="small"><a href="process">← The naturalization process</a></p>
+<h1>How to apply, and what it costs</h1>
+<p class="muted" style="max-width:62ch">
+    Two ways to file Form N-400, what you need in hand before you start, and the money.
+</p>
+
+@if (Loading)
+{
+    <p class="loading">Loading the guide…</p>
+}
+else if (Error is not null)
+{
+    <p class="alert alert-error">@Error</p>
+}
+else if (Guide is not null)
+{
+    @if (Step("eligibility") is { } eligibility)
+    {
+        <div class="card" style="margin-top:1.25rem">
+            <div class="spread">
+                <h2 style="margin:0">@eligibility.Title</h2>
+                <span class="tag">@eligibility.Timing</span>
+            </div>
+            <p style="margin:.6rem 0 0">@eligibility.Summary</p>
+            <ul class="answers small" style="margin-top:.6rem">
+                @foreach (var detail in eligibility.Details)
+                {
+                    <li>@detail</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <h2 style="margin:2rem 0 .75rem">Two ways to file</h2>
+    <div class="grid">
+        @foreach (var method in Guide.Applying.Methods)
+        {
+            <div class="card">
+                <div class="spread">
+                    <h3 style="margin:0">@method.Name</h3>
+                    <span class="tag">@method.Fee</span>
+                </div>
+                <p style="margin:.6rem 0 0">@method.Summary</p>
+                <ul class="answers small" style="margin-top:.6rem">
+                    @foreach (var point in method.Points)
+                    {
+                        <li>@point</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <div class="card" style="margin-top:1rem">
+        <h2>Have these ready before you start</h2>
+        <ul class="answers small">
+            @foreach (var item in Guide.Applying.Checklist)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+
+    <h2 style="margin:2rem 0 .75rem">What it costs</h2>
+    <div class="card">
+        <ul class="q-list">
+            @foreach (var cost in Guide.Costs.Items)
+            {
+                <li>
+                    <div style="flex:1">
+                        <strong>@cost.Label</strong>
+                        <div class="muted small">
+                            @cost.When@(cost.Note is null ? "" : $" · {cost.Note}")
+                        </div>
+                    </div>
+                    <span class="cost">@cost.Amount</span>
+                </li>
+            }
+        </ul>
+        <ul class="answers small" style="margin-top:1rem">
+            @foreach (var note in Guide.Costs.Notes)
+            {
+                <li>@note</li>
+            }
+        </ul>
+        <p style="margin:1rem 0 0">
+            <a class="btn btn-ghost btn-sm" href="https://www.uscis.gov/feecalculator"
+               target="_blank" rel="noopener">USCIS fee calculator →</a>
+        </p>
+    </div>
+
+    @if (Guide.Costs.ProposedChange is { } proposed)
+    {
+        <div class="card">
+            <div class="spread">
+                <h2 style="margin:0">A fee increase has been proposed</h2>
+                <span class="tag tag-senior">@proposed.Status</span>
+            </div>
+            <p style="margin:.7rem 0 0">@proposed.Summary</p>
+            <p class="alert alert-info" style="margin:.9rem 0 0">@proposed.Impact</p>
+            @if (proposed.Url is { Length: > 0 } url)
+            {
+                <p style="margin:.9rem 0 0">
+                    <a class="btn btn-ghost btn-sm" href="@url" target="_blank" rel="noopener">
+                        Read the proposed rule →
+                    </a>
+                </p>
+            }
+        </div>
+    }
+
+    <p class="muted small" style="margin-top:1.5rem">
+        Reviewed @Guide.ReviewedOn. @Guide.Disclaimer
+    </p>
+}

@@ -86,6 +86,47 @@ def parse_states(path: Path):
     return out
 
 
+def copy_guide(src, outdir):
+    """The naturalization guide is authored as JSON, so it is copied rather than parsed.
+
+    Validated here anyway: the app bundles this same file as an asset, so a typo would ship to
+    the phone and the server at once.
+    """
+    guide = json.loads(src.read_text())
+
+    for key in ("reviewedOn", "disclaimer", "timeline", "steps", "afterOath",
+                "applying", "costs", "tests", "sources"):
+        assert key in guide, f"guide is missing '{key}'"
+
+    steps = guide["steps"]
+    assert len(steps) >= 5, f"expected the full journey, got {len(steps)} steps"
+    expected_order = ["eligibility", "file", "receipt", "biometrics",
+                      "interview", "decision", "oath"]
+    assert [s["key"] for s in steps] == expected_order, \
+        "the steps must stay in the order an applicant lives them"
+    for step in steps:
+        for key in ("key", "title", "timing", "summary", "details"):
+            assert step.get(key), f"guide step '{step.get('key')}' is missing '{key}'"
+
+    assert guide["costs"]["items"], "guide has no costs"
+    # A proposed fee must never read as the current one.
+    proposed = guide["costs"].get("proposedChange")
+    if proposed:
+        assert "not in effect" in proposed["status"].lower(), \
+            "a proposed fee change must say it is not in effect"
+
+    versions = {v["version"] for v in guide["tests"]["civics"]["variants"]}
+    assert versions == {"v2008", "v2025"}, \
+        f"the civics variants should name the sets the app ships, got {versions}"
+
+    for link in guide["sources"]:
+        assert link["url"].startswith("https://"), f"insecure source url: {link['url']}"
+
+    (outdir / "naturalization_guide.json").write_text(
+        json.dumps(guide, indent=2, ensure_ascii=False) + "\n")
+    return guide
+
+
 def main():
     root = Path(sys.argv[1])
     outdir = Path(sys.argv[2])
@@ -117,12 +158,15 @@ def main():
     assert "born or naturalized" in by_number[97]["prompt"], \
         "2025 Q97 is not the revised wording"
 
+    guide = copy_guide(root / "data/naturalization_guide.json", outdir)
+
     (outdir / "questions.json").write_text(
         json.dumps(q2008 + q2020 + q2025, indent=2, ensure_ascii=False) + "\n")
     (outdir / "states.json").write_text(
         json.dumps(states, indent=2, ensure_ascii=False) + "\n")
-    print(f"wrote {len(q2008) + len(q2020) + len(q2025)} questions "
-          f"and {len(states)} states to {outdir}")
+    print(f"wrote {len(q2008) + len(q2020) + len(q2025)} questions, "
+          f"{len(states)} states and a {len(guide['steps'])}-step guide "
+          f"(reviewed {guide['reviewedOn']}) to {outdir}")
 
 
 if __name__ == "__main__":
